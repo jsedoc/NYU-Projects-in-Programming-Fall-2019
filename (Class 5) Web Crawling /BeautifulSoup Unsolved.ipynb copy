@@ -1,0 +1,804 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# All material ©2019, Alex Siegman\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "---"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### There is a LOT of useful information onthe internet, and as data scientists you'll often need access to that information. \n",
+    "\n",
+    "### Unfortunatley, rarely is that information contained neatly in CSVs or even in tabular form. Rather, you have to really work to get what you need. \n",
+    "\n",
+    "### Lucky for us, there are some useful tools for \"scraping\" the web – in particular, one called BeautifulSoup (https://www.crummy.com/software/BeautifulSoup/bs4/doc/)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Requirement already satisfied: lxml in /Users/siegmanA/miniconda3/lib/python3.7/site-packages (4.3.3)\r\n"
+     ]
+    }
+   ],
+   "source": [
+    "import time\n",
+    "import re\n",
+    "import csv\n",
+    "import requests\n",
+    "from bs4 import BeautifulSoup\n",
+    "!pip install lxml"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Before we delve in, here's an example of the power of BeautifulSoup:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "['397']\n",
+      "['https://www.wsj.com/articles/yellen-u-s-financial-system-is-safer-and-sounder-than-before-crisis-1498586028']\n"
+     ]
+    }
+   ],
+   "source": [
+    "# the file attached is a simple csv containing 100 unique URLs from WSJ.com\n",
+    "\n",
+    "url_list = [] # create an empty list called 'url_list' where we will store all of the URL's in question\n",
+    "\n",
+    "word_count_list = [] # create an empty list called 'word_count_list' where we will store the word counts associated  \n",
+    "                     # with each URL in our 'url_list'\n",
+    "\n",
+    "with open(\"URLS_for_WordCount.csv\", newline='') as csvfile:\n",
+    "          # note that you will have to navigate to wherever it is you have stored your csv as a pathname\n",
+    "        \n",
+    "    reader = csv.DictReader(csvfile) # this allows us to map our information in each row to an OrderedDictionary \n",
+    "                                     # for more on DictReader see https://docs.python.org/3/library/csv.html\n",
+    "    \n",
+    "    for row in reader: # for every row in our csv, aka, for every dictionary entry (which is composed of our URLs)...\n",
+    "        \n",
+    "        # NB: you can use \"print(row)\" here to see what our ordered dictionary looks like \n",
+    "        \n",
+    "        for k, v in row.items(): # for every key, value pair in our ordered dictionary...\n",
+    "            \n",
+    "            # NB: again, you can use \"print(k)\" or \"print(v)\" here to see what our key, value pairs look like \n",
+    "\n",
+    "            url_list.append(str(v)) # add the URL to our \"url_list\"\n",
+    "            \n",
+    "            r = requests.get(v) # for more on the requests library check out this tutorial from RealPython: \n",
+    "                                # https://realpython.com/python-requests/\n",
+    "            \n",
+    "            soup = BeautifulSoup(r.text,'html') # we are going to turn that URL into 'soup', aka, we are going to be \n",
+    "                                                # able to see it's metadata For more on BeautifulSoup, check out: \n",
+    "                                                # https://www.crummy.com/software/BeautifulSoup/bs4/doc/\n",
+    "            \n",
+    "            wc1 = str(soup.find(\"meta\", property=\"article:word_count\")) # we want to find the word_count associated \n",
+    "                                                                        # with each URL, found in the HTML that we \n",
+    "                                                                        # have just \"souped\"\n",
+    "            \n",
+    "            wc2 = re.search('\\d+',wc1).group(0) # we use regular expressions to find the first number in the associated\n",
+    "            # metadata, and store that. For more on regex see this great tutorial (not from me): https://regexr.com/\n",
+    "        \n",
+    "            word_count_list.append(wc2) # finally, we add (append) our word count to our \"word_count_list\"\n",
+    "            \n",
+    "        break\n",
+    "\n",
+    "print(word_count_list) # just to make sure everything works as planned\n",
+    "print(url_list) # again, just to make sure everything works as planned      \n",
+    "\n",
+    "# the code below will create a new csv, called \"URL_for_WordCount_with_WordCounts.csv\" in our current directory\"\n",
+    "# for more on csv.writer check out: https://docs.python.org/3/library/csv.html\n",
+    "\n",
+    "\"\"\" \n",
+    "\n",
+    "myData = url_list,word_count_list \n",
+    "myFile = open('URL_for_WordCount_with_WordCounts.csv', 'w')  \n",
+    "with myFile:  \n",
+    "   writer = csv.writer(myFile)\n",
+    "   writer.writerows(myData)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Now, back to BeautifulSoup basics:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<!DOCTYPE html>\n",
+      "<html lang=\"en\">\n",
+      " <head>\n",
+      "  <meta charset=\"utf-8\"/>\n",
+      "  <meta content=\"IE=edge,chrome=1\" http-equiv=\"X-UA-Compatible\"/>\n",
+      "  <link href=\"//style.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//a-v2.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//api-v2.soundcloud.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//sb.scorecardresearch.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//secure.quantserve.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//eventlogger.soundcloud.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//api.soundcloud.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//ssl.google-analytics.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//i1.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//i2.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//i3.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//i4.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//wis.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//va.sndcdn.com\" rel=\"dns-prefetch\"/>\n",
+      "  <link href=\"//pixel.quantserve.com\" rel=\"dns-prefetch\"/>\n",
+      "  <title>\n",
+      "   SoundCloud â Listen to free music and podcasts on SoundCloud\n",
+      "  </title>\n",
+      "  <meta content=\"record, sounds, share, sound, audio, tracks, music, soundcloud\" name=\"keywords\"/>\n",
+      "  <meta content=\"origin\" name=\"referrer\"/>\n",
+      "  <meta content=\"dY0CigqM8Inubs_hgrYMwk-zGchKwrvJLcvI_G8631Q\" name=\"google-site-verification\"/>\n",
+      "  <meta content=\"width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no\" name=\"viewport\"/>\n",
+      "  <!--[if IE]><meta content=\"true\" name=\"MSSmartTagsPreventParsing\">\n",
+      "    <meta content=\"false\" http-equiv=\"imagetoolbar\"><![endif]-->\n",
+      "  <meta content=\"19507961798\" property=\"fb:app_id\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"og:site_name\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"twitter:site\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"twitter:app:name:iphone\"/>\n",
+      "  <meta content=\"336353151\" property=\"twitter:app:id:iphone\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"twitter:app:name:ipad\"/>\n",
+      "  <meta content=\"336353151\" property=\"twitter:app:id:ipad\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"twitter:app:name:googleplay\"/>\n",
+      "  <meta content=\"com.soundcloud.android\" property=\"twitter:app:id:googleplay\"/>\n",
+      "  <link href=\"/sc-opensearch.xml\" rel=\"search\" title=\"SoundCloud search\" type=\"application/opensearchdescription+xml\"/>\n",
+      "  <meta content=\"SoundCloud is a music and podcast streaming platform that lets you listen to millions of songs from around the world, or upload your own. Start listening now!\" name=\"description\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"al:ios:app_name\"/>\n",
+      "  <meta content=\"336353151\" property=\"al:ios:app_store_id\"/>\n",
+      "  <meta content=\"SoundCloud\" property=\"al:android:app_name\"/>\n",
+      "  <meta content=\"com.soundcloud.android\" property=\"al:android:package\"/>\n",
+      "  <meta content=\"soundcloud://page/authentication\" property=\"al:ios:url\"/>\n",
+      "  <meta content=\"soundcloud://home\" property=\"al:android:url\"/>\n",
+      "  <link href=\"https://soundcloud.com/\" rel=\"canonical\"/>\n",
+      "  <link href=\"https://m.soundcloud.com/\" media=\"only screen and (max-width: 640px)\" rel=\"alternate\"/>\n",
+      "  <link href=\"android-app://com.soundcloud.android/soundcloud/home\" rel=\"alternate\"/>\n",
+      "  <link href=\"ios-app://336353151/soundcloud/home\" rel=\"alternate\"/>\n",
+      "  <meta content=\"SoundCloud\" name=\"application-name\"/>\n",
+      "  <meta content=\"Launch SoundCloud\" name=\"msapplication-tooltip\"/>\n",
+      "  <meta content=\"https://a-v2.sndcdn.com/assets/images/sc-icons/win8-2dc974a1.png\" name=\"msapplication-TileImage\"/>\n",
+      "  <meta content=\"#ff5500\" name=\"msapplication-TileColor\"/>\n",
+      "  <meta content=\"https://soundcloud.com\" name=\"msapplication-starturl\"/>\n",
+      "  <link href=\"https://a-v2.sndcdn.com/assets/images/sc-icons/favicon-2cadd14b.ico\" rel=\"icon\"/>\n",
+      "  <link href=\"https://a-v2.sndcdn.com/assets/images/sc-icons/ios-a62dfc8f.png\" rel=\"apple-touch-icon\"/>\n",
+      "  <link href=\"https://a-v2.sndcdn.com/assets/images/sc-icons/fluid-b4e7a64b.png\" rel=\"fluid-icon\"/>\n",
+      "  <script type=\"text/javascript\">\n",
+      "   !function(){function o(o){return o.test(a)}function e(){var o,e=a.match(/(opera|chrome|safari|firefox|msie)\\/?\\s*(\\.?\\d+(\\.\\d+)*)/i);return e&&(o=a.match(/version\\/([.\\d]+)/i))?parseInt(o[1],10):e?parseInt(e[2],10):null}var a,r,n;a=window.navigator.userAgent.toLowerCase();var i,t=\"undefined\"!=typeof window.opera&&\"[object Opera]\"===window.opera.toString(),s=a.match(/\\sopr\\/([0-9]+)\\./),p=o(/chrome/),d=o(/webkit/),c=!p&&o(/safari/),f=!t&&o(/msie/),m=!d&&o(/gecko/);i=s?parseInt(s[1],10):e();var w=o(/mobile|android|iphone|ipod|symbianos|nokia|s60|playbook|playstation/);m&&(r=a.match(/(firefox)\\/?\\s*(\\.?\\d+(\\.\\d+)*)/i),n=r&&r.length>1&&parseInt(r[2],10)>=41),i&&!w&&(p&&!s&&i<40||m&&!s&&n===!1||c&&i<8||f&&i<11||t&&i<13||s&&i<27)&&(window.__sc_abortApp=!0)}();\n",
+      "  </script>\n",
+      "  <link href=\"https://style.sndcdn.com/css/interstate-0ab59479718c8235122cad6b16a66953d725c43a.css\" rel=\"stylesheet\"/>\n",
+      "  <link href=\"https://a-v2.sndcdn.com/assets/css/app-0bee78a3.css\" rel=\"stylesheet\"/>\n",
+      " </head>\n",
+      " <body>\n",
+      "  <div id=\"app\">\n",
+      "   <style type=\"text/css\">\n",
+      "    .header{width:100%;height:46px}.header,.header__logo{background:#333}.header__logoLink{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAWCAQAAAAs/tcnAAABMUlEQVR4Ac3UJfQUARTGUaxnrBHpPeDu7u7uTg/QO/SK9q1U3KHg2i7fH4exNeSdc9/ZNL/RHfRfjdHOuOajt246b7Fh/T38WO/9OnfM7s+hx3gUh5XNWYN7D4wnTlOe6OGsv/6eQlQFmNX9WScTs4jqwD3DOr/j04gJxHyiOsCiTgITibnEdGIJURc410lgJrGYmE+sIuoCz1301BstGwxueqQLiVXEMmI9cVp7c9WIYmAqkUysIjYQa4mtRAJtJwb//kgXEdOJTcR2Yiuxi2g/wIYfgTnEBmIFsYvYS+whDhCdBFo/ApuJvcRO4hBxhDhMHCU6Cbz5EThKHCe+7BNEcXceKFxB/e7yFs0h1hP1u/OHXHiL6nfnr2nhO6jfR3r50L5cR9O+oX5+/FX8vfkElmh0Xu+KRLEAAAAASUVORK5CYII=) no-repeat 12px 11px;background-size:48px 22px;display:block;height:46px;width:69px}.header__logoLink:focus{background-color:rgba(255,72,0,.8);outline:0}#header__loading{margin:13px auto 0;width:16px;background:url(https://a-v2.sndcdn.com/assets/images/loader-dark-45940ae3.gif) center no-repeat;background-size:16px 16px}@media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi),(min-resolution:2dppx){.header__logoLink{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAsCAQAAAAwC3WkAAACUklEQVR4Ae2YA4wdURSGv+fattu4MWrbtu24bqOacWrbjNHYrm3bOF3vSXrzOpM7d3c22e8k31P03//ME0WdCM6QsvSlNS1pQGV+8JxnPOEKlyM3CD9SVjbJFzFzV1ZKJcKMVJBrkp6PslaqEFZku3jhmXQjPEhjuZkxjQHkgXjjj2yQBOFAFolksAhA/HBM4lgQJShKK/thMPskFoYASWV/DGeTTQCLXdeQUPbLHOlWcA0Mo0nGDAs0AOyQigUVoEyuVRt2KwRQm+UFFSClrNqwbAAmS0UnAdKedFlluwagNDPdNaBPOmW0fQMw3V2AcspJZRXAugGoIy1cBSihnFLWz9s3AB3wTdx3AHcNwABJ0I3m1EB4wm0ucCbyKIgAJZXdXQPQJWNyaZYxPdgiu1geeeJlhdS7jdUKBUuMyVyTvh4DMJwmGTPcwQrZUJZTMtdbgEq5Vm2oABYrZEeUTdLXS4ByyrqNkspJZWMzjiLsl1rGF/RJU1a5mrJ9A/aUZaU52QiaZMyIfxqoqFyI14BigtQxBagNkGHdgApQyO9Cmhj9TAGqA2QYc4AAPwfs6ZU+QNhXCBqbAtQAyHD4Vwhqhb8By2+johxR/q38y2x+KrviiSnAc4AcfwzIrrhtCvAMIMvhD3Dhfw18CMhu+M2Zor1CuyKPTAEeA2Q47A18ZDmYAhziVsYcCnkDfxgdeYKBeOQ2TQFC3cAfFkTOevkcCKqBpwEvz4DIVvAS4E1A3ktQ/GY7LSJn/f91bnc/KavlidjwUa7LRZkldSimGLf8BYloKYNdaWi1AAAAAElFTkSuQmCC)}}\n",
+      "   </style>\n",
+      "   <div class=\"header sc-selection-disabled show fixed g-dark g-z-index-header\" role=\"banner\">\n",
+      "    <div class=\"header__inner l-container l-fullwidth\">\n",
+      "     <div class=\"header__left left\">\n",
+      "      <div class=\"header__logo left\">\n",
+      "       <a class=\"header__logoLink sc-border-box sc-ir\" href=\"/\" title=\"Home\">\n",
+      "        SoundCloud\n",
+      "       </a>\n",
+      "      </div>\n",
+      "     </div>\n",
+      "     <div class=\"sc-hidden\" id=\"header__loading\">\n",
+      "     </div>\n",
+      "    </div>\n",
+      "   </div>\n",
+      "   <script type=\"text/javascript\">\n",
+      "    window.setTimeout(function(){if(!window.__sc_abortApp){var e=window.document.getElementById(\"header__loading\");e&&(e.className=\"\")}},6e3);\n",
+      "   </script>\n",
+      "   <style type=\"text/css\">\n",
+      "    .errorPage__inner{width:580px;margin:0 auto;position:relative;padding-top:460px;background:url(https://a-v2.sndcdn.com/assets/images/errors/500-e5a180b7.png) no-repeat 50% 80px;text-align:center;transition:all 1s linear}.errorTitle{margin-bottom:10px;font-size:30px}.errorText{line-height:28px;color:#666;font-size:20px}.errorButtons{margin-top:30px}#updateBrowserMessage{width:600px;margin:0 auto;position:relative;padding-top:410px;background:url(data:image/png;base64,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) no-repeat 50% 130px;text-align:center;display:none}#updateBrowserMessage .messageText{line-height:26px;font-size:20px;margin-bottom:5px}#updateBrowserMessage .downloadLinks{margin-top:0}@media (max-width:1280px){.errorPage__inner{background-size:80%}}\n",
+      "   </style>\n",
+      "   <noscript class=\"errorPage__inner\">\n",
+      "    <div class=\"errorPage__inner\">\n",
+      "     <p class=\"errorTitle\">\n",
+      "      JavaScript is disabled\n",
+      "     </p>\n",
+      "     <p class=\"errorText sc-font-light\">\n",
+      "      You need to enable JavaScript to use SoundCloud\n",
+      "     </p>\n",
+      "     <div class=\"errorButtons\">\n",
+      "      <a class=\"sc-button sc-button-medium\" href=\"http://www.enable-javascript.com/\" target=\"_blank\">\n",
+      "       Show me how to enable it\n",
+      "      </a>\n",
+      "     </div>\n",
+      "    </div>\n",
+      "   </noscript>\n",
+      "   <noscript>\n",
+      "   </noscript>\n",
+      "   <div id=\"updateBrowserMessage\">\n",
+      "    <p class=\"messageText sc-text-light\">\n",
+      "     Your current browser isn't compatible with SoundCloud.\n",
+      "     <br/>\n",
+      "     Please download one of our supported browsers.\n",
+      "     <a href=\"https://help.soundcloud.com/hc/articles/115003564308-Technical-requirements\">\n",
+      "      Need help?\n",
+      "     </a>\n",
+      "    </p>\n",
+      "    <div class=\"downloadLinks sc-type-h3 sc-text-light\">\n",
+      "     <a href=\"http://google.com/chrome\" target=\"_blank\" title=\"Chrome\">\n",
+      "      Chrome\n",
+      "     </a>\n",
+      "     |\n",
+      "     <a href=\"http://firefox.com\" target=\"_blank\" title=\"Firefox\">\n",
+      "      Firefox\n",
+      "     </a>\n",
+      "     |\n",
+      "     <a href=\"http://apple.com/safari\" target=\"_blank\" title=\"Safari\">\n",
+      "      Safari\n",
+      "     </a>\n",
+      "     |\n",
+      "     <a href=\"http://windows.microsoft.com/ie\" target=\"_blank\" title=\"Internet Explorer\">\n",
+      "      Internet Explorer\n",
+      "     </a>\n",
+      "    </div>\n",
+      "   </div>\n",
+      "   <div class=\"errorPage__inner sc-hidden\" id=\"error__timeout\">\n",
+      "    <p class=\"errorTitle sc-type-h1\">\n",
+      "     Sorry! Something went wrong\n",
+      "    </p>\n",
+      "    <div class=\"errorText sc-font-light\">\n",
+      "     <p>\n",
+      "      Is your network connection unstable or browser outdated?\n",
+      "     </p>\n",
+      "    </div>\n",
+      "    <div class=\"errorButtons\">\n",
+      "     <a class=\"sc-button\" href=\"http://help.soundcloud.com\" id=\"try-again\" target=\"_blank\">\n",
+      "      I need help\n",
+      "     </a>\n",
+      "    </div>\n",
+      "   </div>\n",
+      "   <script type=\"text/javascript\">\n",
+      "    window.__sc_abortApp&&(window.document.getElementById(\"updateBrowserMessage\").style.display=\"block\");\n",
+      "   </script>\n",
+      "   <script type=\"text/javascript\">\n",
+      "    function displayError(){if(!window.__sc_abortApp){var r=window.document,e=r.getElementById(\"error__timeout\"),o=r.getElementById(\"header__loading\");e&&o&&(e.className=\"errorPage__inner\",o.className=\"sc-hidden\")}}window.setTimeout(displayError,15e3),window.onerror=displayError;\n",
+      "   </script>\n",
+      "   <p>\n",
+      "    <a href=\"/popular/searches\" title=\"Popular searches\">\n",
+      "     Popular searches\n",
+      "    </a>\n",
+      "   </p>\n",
+      "  </div>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/vendor-f483061-460101d-3.js\">\n",
+      "  </script>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/views-al-293c1ac-09cb613-3.js\">\n",
+      "  </script>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/views-d16576d-4881963-3.js\">\n",
+      "  </script>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/lib-0678465-a3fde71-3.js\">\n",
+      "  </script>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/23-1a0d616-be0fb8c-3.js\">\n",
+      "  </script>\n",
+      "  <script type=\"text/javascript\">\n",
+      "   window.__sc_version = \"1564401410\";\n",
+      "window.webpackManifest = {\"1\":\"assets/views-d16576d-4881963-3.js\",\"2\":\"assets/app-b309631-a3fde71-3.js\",\"3\":\"assets/views-al-293c1ac-09cb613-3.js\",\"4\":\"assets/lib-0678465-a3fde71-3.js\",\"5\":\"assets/5-55a91cc-c0eb675-3.js\",\"6\":\"assets/6-4007ff4-c0eb675-3.js\",\"7\":\"assets/7-58e076c-9741921-3.js\",\"8\":\"assets/8-0988471-48e5404-3.js\",\"9\":\"assets/9-fc573be-429a19e-3.js\",\"10\":\"assets/10-84ff6eb-cdd3d39-3.js\",\"11\":\"assets/11-24d3fab-429a19e-3.js\",\"12\":\"assets/12-9f8cb02-8742a4e-3.js\",\"13\":\"assets/13-df39981-48af33f-3.js\",\"14\":\"assets/14-b71abcd-aac750b-3.js\",\"15\":\"assets/15-d706b95-eba8a75-3.js\",\"16\":\"assets/16-86bfc5c-7e9eb6a-3.js\",\"17\":\"assets/17-6372dac-7e9eb6a-3.js\",\"18\":\"assets/18-1ab8e6b-ba0b073-3.js\",\"19\":\"assets/19-4f34e29-aac750b-3.js\",\"20\":\"assets/20-31f97e5-863137f-3.js\",\"21\":\"assets/21-3e35fbc-b8ae4dd-3.js\",\"22\":\"assets/22-c619172-aac750b-3.js\",\"23\":\"assets/23-1a0d616-be0fb8c-3.js\",\"24\":\"assets/24-a469593-48af33f-3.js\",\"25\":\"assets/25-9be8683-33f89b6-3.js\",\"26\":\"assets/26-9c1eac6-aac750b-3.js\",\"27\":\"assets/27-007366f-7b9726a-3.js\",\"28\":\"assets/28-e62cc22-2a045cc-3.js\",\"29\":\"assets/29-9865b79-2d50dd5-3.js\",\"30\":\"assets/30-6a96e61-aac750b-3.js\",\"31\":\"assets/31-d07fd72-024a7b2-3.js\",\"32\":\"assets/32-2851588-f455fe7-3.js\",\"33\":\"assets/33-2fc4bee-049b24f-3.js\",\"34\":\"assets/34-23019ed-48af33f-3.js\",\"35\":\"assets/35-d06614f-f455fe7-3.js\",\"36\":\"assets/36-22325f0-f455fe7-3.js\",\"37\":\"assets/37-af1a922-84b53aa-3.js\",\"38\":\"assets/38-58214b9-0dee736-3.js\",\"39\":\"assets/39-b9fa8a0-ff73319-3.js\",\"40\":\"assets/40-1486bca-ed92225-3.js\",\"41\":\"assets/41-cef1f01-f455fe7-3.js\",\"42\":\"assets/42-9ecce9e-18ae49e-3.js\",\"43\":\"assets/43-328ef31-f455fe7-3.js\",\"44\":\"assets/44-f32a830-f455fe7-3.js\",\"45\":\"assets/45-610b92e-f455fe7-3.js\",\"46\":\"assets/46-c32eb50-f455fe7-3.js\",\"47\":\"assets/47-c91458c-f455fe7-3.js\",\"48\":\"assets/48-d98fc64-f455fe7-3.js\",\"49\":\"assets/49-e7a0c31-f455fe7-3.js\",\"50\":\"assets/50-d8236a9-f455fe7-3.js\",\"51\":\"assets/51-3eeb91e-eaac229-3.js\",\"52\":\"assets/52-3488192-731621d-3.js\",\"53\":\"assets/53-9f5cbd2-f455fe7-3.js\"};\n",
+      "  </script>\n",
+      "  <script crossorigin=\"\" src=\"https://a-v2.sndcdn.com/assets/app-b309631-a3fde71-3.js\">\n",
+      "  </script>\n",
+      "  <script>\n",
+      "   webpackJsonp([],{0:function(e,t,n){function r(e){return i.every(function(t){return t in e.prototype})}function a(e){var t=r(e);return t?function(t){var n,r=o;t.lastFetchTime&&(r=t.lastFetchTime,delete t.lastFetchTime),n=new e(t,{parse:!0}),n.lastFetchTime=r,n.release()}:e}var c=[{\"id\":224,\"data\":[{\"allows_messages_from_unfollowed_users\":false,\"analytics_opt_in\":true,\"communications_opt_in\":true,\"targeted_advertising_opt_in\":false}]},{\"id\":1934,\"data\":[{\"country_code\":\"US\",\"country_name\":\"United States\",\"region\":\"NY\",\"city\":\"New York\",\"postal_code\":\"10009\",\"latitude\":40.72630310058594,\"longitude\":-73.98179626464844}]},{\"id\":1852,\"data\":[{}]},{\"id\":1854,\"data\":[{\"v2_test_feature_toggle\":true,\"v2_oscp_german_tax_fields_support\":true,\"v2_use_new_connect\":true,\"v2_show_off_platform_upsells\":true,\"v2_unified_checkout\":true,\"v2_unified_pro_checkout\":true}]}],o=Date.now(),i=[\"resource_type\",\"get\",\"set\",\"addSubmodel\",\"release\"];c.forEach(function(e){try{var t=a(n(e.id));e.data.forEach(function(e){t(e)})}catch(r){}})}});\n",
+      "  </script>\n",
+      " </body>\n",
+      "</html>\n"
+     ]
+    }
+   ],
+   "source": [
+    "url = \"https://soundcloud.com/\" # a notoriously permeable site for scraping\n",
+    "\n",
+    "r = requests.get(url)\n",
+    "\n",
+    "soup = BeautifulSoup(r.text,'html')\n",
+    "\n",
+    "print(soup.prettify())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<title>SoundCloud â Listen to free music and podcasts on SoundCloud</title>"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.title"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'title'"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.title.name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'SoundCloud â\\x80\\x93 Listen to free music and podcasts on SoundCloud'"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.title.string"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'head'"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.title.parent.name"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<p class=\"errorTitle\">JavaScript is disabled</p>"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.p"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['errorTitle']"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.p['class']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<a class=\"header__logoLink sc-border-box sc-ir\" href=\"/\" title=\"Home\">SoundCloud</a>"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.a"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<a class=\"header__logoLink sc-border-box sc-ir\" href=\"/\" title=\"Home\">SoundCloud</a>,\n",
+       " <a class=\"sc-button sc-button-medium\" href=\"http://www.enable-javascript.com/\" target=\"_blank\">Show me how to enable it</a>,\n",
+       " <a href=\"https://help.soundcloud.com/hc/articles/115003564308-Technical-requirements\">Need help?</a>,\n",
+       " <a href=\"http://google.com/chrome\" target=\"_blank\" title=\"Chrome\">Chrome</a>,\n",
+       " <a href=\"http://firefox.com\" target=\"_blank\" title=\"Firefox\">Firefox</a>,\n",
+       " <a href=\"http://apple.com/safari\" target=\"_blank\" title=\"Safari\">Safari</a>,\n",
+       " <a href=\"http://windows.microsoft.com/ie\" target=\"_blank\" title=\"Internet Explorer\">Internet Explorer</a>,\n",
+       " <a class=\"sc-button\" href=\"http://help.soundcloud.com\" id=\"try-again\" target=\"_blank\">I need help</a>,\n",
+       " <a href=\"/popular/searches\" title=\"Popular searches\">Popular searches</a>]"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.find_all('a')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[]"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "soup.find_all(id='link3')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/\n",
+      "http://www.enable-javascript.com/\n",
+      "https://help.soundcloud.com/hc/articles/115003564308-Technical-requirements\n",
+      "http://google.com/chrome\n",
+      "http://firefox.com\n",
+      "http://apple.com/safari\n",
+      "http://windows.microsoft.com/ie\n",
+      "http://help.soundcloud.com\n",
+      "/popular/searches\n"
+     ]
+    }
+   ],
+   "source": [
+    "for link in soup.find_all('a'):\n",
+    "    print(link.get('href'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "SoundCloud â Listen to free music and podcasts on SoundCloud\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "!function(){function o(o){return o.test(a)}function e(){var o,e=a.match(/(opera|chrome|safari|firefox|msie)\\/?\\s*(\\.?\\d+(\\.\\d+)*)/i);return e&&(o=a.match(/version\\/([.\\d]+)/i))?parseInt(o[1],10):e?parseInt(e[2],10):null}var a,r,n;a=window.navigator.userAgent.toLowerCase();var i,t=\"undefined\"!=typeof window.opera&&\"[object Opera]\"===window.opera.toString(),s=a.match(/\\sopr\\/([0-9]+)\\./),p=o(/chrome/),d=o(/webkit/),c=!p&&o(/safari/),f=!t&&o(/msie/),m=!d&&o(/gecko/);i=s?parseInt(s[1],10):e();var w=o(/mobile|android|iphone|ipod|symbianos|nokia|s60|playbook|playstation/);m&&(r=a.match(/(firefox)\\/?\\s*(\\.?\\d+(\\.\\d+)*)/i),n=r&&r.length>1&&parseInt(r[2],10)>=41),i&&!w&&(p&&!s&&i<40||m&&!s&&n===!1||c&&i<8||f&&i<11||t&&i<13||s&&i<27)&&(window.__sc_abortApp=!0)}();\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      ".header{width:100%;height:46px}.header,.header__logo{background:#333}.header__logoLink{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAWCAQAAAAs/tcnAAABMUlEQVR4Ac3UJfQUARTGUaxnrBHpPeDu7u7uTg/QO/SK9q1U3KHg2i7fH4exNeSdc9/ZNL/RHfRfjdHOuOajt246b7Fh/T38WO/9OnfM7s+hx3gUh5XNWYN7D4wnTlOe6OGsv/6eQlQFmNX9WScTs4jqwD3DOr/j04gJxHyiOsCiTgITibnEdGIJURc410lgJrGYmE+sIuoCz1301BstGwxueqQLiVXEMmI9cVp7c9WIYmAqkUysIjYQa4mtRAJtJwb//kgXEdOJTcR2Yiuxi2g/wIYfgTnEBmIFsYvYS+whDhCdBFo/ApuJvcRO4hBxhDhMHCU6Cbz5EThKHCe+7BNEcXceKFxB/e7yFs0h1hP1u/OHXHiL6nfnr2nhO6jfR3r50L5cR9O+oX5+/FX8vfkElmh0Xu+KRLEAAAAASUVORK5CYII=) no-repeat 12px 11px;background-size:48px 22px;display:block;height:46px;width:69px}.header__logoLink:focus{background-color:rgba(255,72,0,.8);outline:0}#header__loading{margin:13px auto 0;width:16px;background:url(https://a-v2.sndcdn.com/assets/images/loader-dark-45940ae3.gif) center no-repeat;background-size:16px 16px}@media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi),(min-resolution:2dppx){.header__logoLink{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAsCAQAAAAwC3WkAAACUklEQVR4Ae2YA4wdURSGv+fattu4MWrbtu24bqOacWrbjNHYrm3bOF3vSXrzOpM7d3c22e8k31P03//ME0WdCM6QsvSlNS1pQGV+8JxnPOEKlyM3CD9SVjbJFzFzV1ZKJcKMVJBrkp6PslaqEFZku3jhmXQjPEhjuZkxjQHkgXjjj2yQBOFAFolksAhA/HBM4lgQJShKK/thMPskFoYASWV/DGeTTQCLXdeQUPbLHOlWcA0Mo0nGDAs0AOyQigUVoEyuVRt2KwRQm+UFFSClrNqwbAAmS0UnAdKedFlluwagNDPdNaBPOmW0fQMw3V2AcspJZRXAugGoIy1cBSihnFLWz9s3AB3wTdx3AHcNwABJ0I3m1EB4wm0ucCbyKIgAJZXdXQPQJWNyaZYxPdgiu1geeeJlhdS7jdUKBUuMyVyTvh4DMJwmGTPcwQrZUJZTMtdbgEq5Vm2oABYrZEeUTdLXS4ByyrqNkspJZWMzjiLsl1rGF/RJU1a5mrJ9A/aUZaU52QiaZMyIfxqoqFyI14BigtQxBagNkGHdgApQyO9Cmhj9TAGqA2QYc4AAPwfs6ZU+QNhXCBqbAtQAyHD4Vwhqhb8By2+johxR/q38y2x+KrviiSnAc4AcfwzIrrhtCvAMIMvhD3Dhfw18CMhu+M2Zor1CuyKPTAEeA2Q47A18ZDmYAhziVsYcCnkDfxgdeYKBeOQ2TQFC3cAfFkTOevkcCKqBpwEvz4DIVvAS4E1A3ktQ/GY7LSJn/f91bnc/KavlidjwUa7LRZkldSimGLf8BYloKYNdaWi1AAAAAElFTkSuQmCC)}}\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "SoundCloud\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "window.setTimeout(function(){if(!window.__sc_abortApp){var e=window.document.getElementById(\"header__loading\");e&&(e.className=\"\")}},6e3);\n",
+      ".errorPage__inner{width:580px;margin:0 auto;position:relative;padding-top:460px;background:url(https://a-v2.sndcdn.com/assets/images/errors/500-e5a180b7.png) no-repeat 50% 80px;text-align:center;transition:all 1s linear}.errorTitle{margin-bottom:10px;font-size:30px}.errorText{line-height:28px;color:#666;font-size:20px}.errorButtons{margin-top:30px}#updateBrowserMessage{width:600px;margin:0 auto;position:relative;padding-top:410px;background:url(data:image/png;base64,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) no-repeat 50% 130px;text-align:center;display:none}#updateBrowserMessage .messageText{line-height:26px;font-size:20px;margin-bottom:5px}#updateBrowserMessage .downloadLinks{margin-top:0}@media (max-width:1280px){.errorPage__inner{background-size:80%}}\n",
+      "\n",
+      "\n",
+      "JavaScript is disabled\n",
+      "You need to enable JavaScript to use SoundCloud\n",
+      "\n",
+      "Show me how to enable it\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "    Your current browser isn't compatible with SoundCloud. \n",
+      "    Please download one of our supported browsers. Need help?\n",
+      "\n",
+      "\n",
+      "Chrome | Firefox | Safari | Internet Explorer\n",
+      "\n",
+      "\n",
+      "\n",
+      "Sorry! Something went wrong\n",
+      "\n",
+      "Is your network connection unstable or browser outdated?\n",
+      "\n",
+      "\n",
+      "I need help\n",
+      "\n",
+      "\n",
+      "window.__sc_abortApp&&(window.document.getElementById(\"updateBrowserMessage\").style.display=\"block\");\n",
+      "function displayError(){if(!window.__sc_abortApp){var r=window.document,e=r.getElementById(\"error__timeout\"),o=r.getElementById(\"header__loading\");e&&o&&(e.className=\"errorPage__inner\",o.className=\"sc-hidden\")}}window.setTimeout(displayError,15e3),window.onerror=displayError;\n",
+      "\n",
+      "Popular searches\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "window.__sc_version = \"1564401410\";\n",
+      "window.webpackManifest = {\"1\":\"assets/views-d16576d-4881963-3.js\",\"2\":\"assets/app-b309631-a3fde71-3.js\",\"3\":\"assets/views-al-293c1ac-09cb613-3.js\",\"4\":\"assets/lib-0678465-a3fde71-3.js\",\"5\":\"assets/5-55a91cc-c0eb675-3.js\",\"6\":\"assets/6-4007ff4-c0eb675-3.js\",\"7\":\"assets/7-58e076c-9741921-3.js\",\"8\":\"assets/8-0988471-48e5404-3.js\",\"9\":\"assets/9-fc573be-429a19e-3.js\",\"10\":\"assets/10-84ff6eb-cdd3d39-3.js\",\"11\":\"assets/11-24d3fab-429a19e-3.js\",\"12\":\"assets/12-9f8cb02-8742a4e-3.js\",\"13\":\"assets/13-df39981-48af33f-3.js\",\"14\":\"assets/14-b71abcd-aac750b-3.js\",\"15\":\"assets/15-d706b95-eba8a75-3.js\",\"16\":\"assets/16-86bfc5c-7e9eb6a-3.js\",\"17\":\"assets/17-6372dac-7e9eb6a-3.js\",\"18\":\"assets/18-1ab8e6b-ba0b073-3.js\",\"19\":\"assets/19-4f34e29-aac750b-3.js\",\"20\":\"assets/20-31f97e5-863137f-3.js\",\"21\":\"assets/21-3e35fbc-b8ae4dd-3.js\",\"22\":\"assets/22-c619172-aac750b-3.js\",\"23\":\"assets/23-1a0d616-be0fb8c-3.js\",\"24\":\"assets/24-a469593-48af33f-3.js\",\"25\":\"assets/25-9be8683-33f89b6-3.js\",\"26\":\"assets/26-9c1eac6-aac750b-3.js\",\"27\":\"assets/27-007366f-7b9726a-3.js\",\"28\":\"assets/28-e62cc22-2a045cc-3.js\",\"29\":\"assets/29-9865b79-2d50dd5-3.js\",\"30\":\"assets/30-6a96e61-aac750b-3.js\",\"31\":\"assets/31-d07fd72-024a7b2-3.js\",\"32\":\"assets/32-2851588-f455fe7-3.js\",\"33\":\"assets/33-2fc4bee-049b24f-3.js\",\"34\":\"assets/34-23019ed-48af33f-3.js\",\"35\":\"assets/35-d06614f-f455fe7-3.js\",\"36\":\"assets/36-22325f0-f455fe7-3.js\",\"37\":\"assets/37-af1a922-84b53aa-3.js\",\"38\":\"assets/38-58214b9-0dee736-3.js\",\"39\":\"assets/39-b9fa8a0-ff73319-3.js\",\"40\":\"assets/40-1486bca-ed92225-3.js\",\"41\":\"assets/41-cef1f01-f455fe7-3.js\",\"42\":\"assets/42-9ecce9e-18ae49e-3.js\",\"43\":\"assets/43-328ef31-f455fe7-3.js\",\"44\":\"assets/44-f32a830-f455fe7-3.js\",\"45\":\"assets/45-610b92e-f455fe7-3.js\",\"46\":\"assets/46-c32eb50-f455fe7-3.js\",\"47\":\"assets/47-c91458c-f455fe7-3.js\",\"48\":\"assets/48-d98fc64-f455fe7-3.js\",\"49\":\"assets/49-e7a0c31-f455fe7-3.js\",\"50\":\"assets/50-d8236a9-f455fe7-3.js\",\"51\":\"assets/51-3eeb91e-eaac229-3.js\",\"52\":\"assets/52-3488192-731621d-3.js\",\"53\":\"assets/53-9f5cbd2-f455fe7-3.js\"};\n",
+      "\n",
+      "webpackJsonp([],{0:function(e,t,n){function r(e){return i.every(function(t){return t in e.prototype})}function a(e){var t=r(e);return t?function(t){var n,r=o;t.lastFetchTime&&(r=t.lastFetchTime,delete t.lastFetchTime),n=new e(t,{parse:!0}),n.lastFetchTime=r,n.release()}:e}var c=[{\"id\":224,\"data\":[{\"allows_messages_from_unfollowed_users\":false,\"analytics_opt_in\":true,\"communications_opt_in\":true,\"targeted_advertising_opt_in\":false}]},{\"id\":1934,\"data\":[{\"country_code\":\"US\",\"country_name\":\"United States\",\"region\":\"NY\",\"city\":\"New York\",\"postal_code\":\"10009\",\"latitude\":40.72630310058594,\"longitude\":-73.98179626464844}]},{\"id\":1852,\"data\":[{}]},{\"id\":1854,\"data\":[{\"v2_test_feature_toggle\":true,\"v2_oscp_german_tax_fields_support\":true,\"v2_use_new_connect\":true,\"v2_show_off_platform_upsells\":true,\"v2_unified_checkout\":true,\"v2_unified_pro_checkout\":true}]}],o=Date.now(),i=[\"resource_type\",\"get\",\"set\",\"addSubmodel\",\"release\"];c.forEach(function(e){try{var t=a(n(e.id));e.data.forEach(function(e){t(e)})}catch(r){}})}});\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(soup.get_text())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# https://www.crummy.com/software/BeautifulSoup/bs4/doc/\n",
+    "\n",
+    "# stopped at 'Kinds of objects'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.1"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
