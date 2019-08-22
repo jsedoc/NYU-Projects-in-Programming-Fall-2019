@@ -1,7 +1,6 @@
 
 from flask import Flask, render_template
-from datetime import datetime
-
+from datetime import *
 app = Flask(__name__)
 
 visitor_counter = 0 # set a variable used to track visitors to our URL
@@ -15,8 +14,11 @@ def get_time_message():
 
 @app.route("/")
 def home():
+    datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    date = datetime.now().strftime('%Y-%m-%d')
+    time = datetime.now().strftime('%H:%M:%S')
     message = get_time_message()
-    return render_template("index.html")
+    return render_template("index.html",username="Alex Siegman",today=message)
 
 @app.route("/hello")
 def hello_visitor():
