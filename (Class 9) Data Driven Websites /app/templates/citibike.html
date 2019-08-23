@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Station ID</th>
+                <th>Is Renting</th>
+                <th>Capacity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for station in stations %}
+                <tr>
+                    <td>{{ station.station_id }}</td>
+                    <td>{{ station.is_renting }}</td>
+                    <td>{{ station.num_bikes_available }}</td>
+                </tr>
+            {% endfor %}
+         </tbody>
+    </table>
+</body>
+</html>

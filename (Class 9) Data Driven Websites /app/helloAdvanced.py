@@ -1,29 +1,34 @@
+from flask import Flask, render_template, request
+from sqlalchemy import create_engine
 
-from flask import Flask, render_template
-from datetime import *
 app = Flask(__name__)
 
-visitor_counter = 0 # set a variable used to track visitors to our URL
+@app.route('/station_status')
 
-def get_time_message():
-    datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    date = datetime.now().strftime('%Y-%m-%d')
-    time = datetime.now().strftime('%H:%M:%S')
-    message = "The date is {d} and the time is {t}"
-    return message.format(d=date, t=time)
+def station_status():
 
-@app.route("/")
-def home():
-    datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    date = datetime.now().strftime('%Y-%m-%d')
-    time = datetime.now().strftime('%H:%M:%S')
-    message = get_time_message()
-    return render_template("index.html",username="Alex Siegman",today=message)
+    station_id = int(request.args.get('station_id'))
 
-@app.route("/hello")
-def hello_visitor():
-    global visitor_counter # global gets updated each time someone visits /hello
-    visitor_counter += 1
-    return "<H1> Hello! You are visitor #{i}</H1>".format(i=visitor_counter)
+    conn_string = 'mysql://{user}:{password}@{host}/{db}?charset={encoding}'.format(
+        host = 'localhost',
+        user = 'siegmanA',
+        db = 'citibike',
+        password = 'password',
+        encoding = 'utf8mb4')
 
-app.run(host='0.0.0.0',port=5000,debug=True)
+    engine = create_engine(conn_string)
+    con = engine.connect()
+    query = '''SELECT is_renting,
+                      num_bikes_available,
+                      num_bikes_disabled,
+                      num_docks_available,
+                      num_docks_disabled
+               FROM StationInfo
+               WHERE station_id = %s'''
+    status = con.execute(query, (station_id,))
+
+    con.close()
+
+    return render_template('station_status.html', station_id = station_id, statuses=status)
+
+app.run(host='0.0.0.0', port=5000, debug=True)
