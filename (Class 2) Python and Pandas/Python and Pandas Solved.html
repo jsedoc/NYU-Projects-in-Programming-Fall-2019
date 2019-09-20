@@ -13158,7 +13158,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Data-Upload">Data Upload<a class="anchor-link" href="#Data-Upload">&#182;</a></h2><h3 id="The-first-step-of-data-analysis-is-to-actually-get-your-data-in-the-right-place.">The first step of data analysis is to actually get your data in the right place.<a class="anchor-link" href="#The-first-step-of-data-analysis-is-to-actually-get-your-data-in-the-right-place.">&#182;</a></h3><h3 id="In-order-to-upload-our-CSV-(Commas-Separated-Values)-into-our-Jupyter-Notebook,-we-need-to-point-our-machine-into-the-right-folder,-so-to-speak.">In order to upload our CSV (Commas Separated Values) into our Jupyter Notebook, we need to point our machine into the right folder, so to speak.<a class="anchor-link" href="#In-order-to-upload-our-CSV-(Commas-Separated-Values)-into-our-Jupyter-Notebook,-we-need-to-point-our-machine-into-the-right-folder,-so-to-speak.">&#182;</a></h3><h3 id="We-can-use-Command-Line-commands-to-do-so.-(For-more-on-the-Command-Line,-check-out-&quot;Unix-101&quot;-in-the-GitHub-repo).">We can use Command Line commands to do so. (For more on the Command Line, check out "Unix 101" in the GitHub repo).<a class="anchor-link" href="#We-can-use-Command-Line-commands-to-do-so.-(For-more-on-the-Command-Line,-check-out-&quot;Unix-101&quot;-in-the-GitHub-repo).">&#182;</a></h3>
+<h2 id="Data-Upload">Data Upload<a class="anchor-link" href="#Data-Upload">&#182;</a></h2><h3 id="The-first-step-of-data-analysis-is-to-actually-get-your-data-in-the-right-place.">The first step of data analysis is to actually get your data in the right place.<a class="anchor-link" href="#The-first-step-of-data-analysis-is-to-actually-get-your-data-in-the-right-place.">&#182;</a></h3><h3 id="In-order-to-upload-our-CSV-(Commas-Separated-Values)-into-our-Jupyter-Notebook,-we-need-to-point-our-machine-into-the-right-folder,-so-to-speak.">In order to upload our CSV (Commas Separated Values) into our Jupyter Notebook, we need to point our machine into the right folder, so to speak.<a class="anchor-link" href="#In-order-to-upload-our-CSV-(Commas-Separated-Values)-into-our-Jupyter-Notebook,-we-need-to-point-our-machine-into-the-right-folder,-so-to-speak.">&#182;</a></h3><h3 id="We-can-use-Command-Line-commands-to-do-so.-(For-more-on-the-Command-Line,-check-out-&quot;Unix-101&quot;-in-the-GitHub-repo).">We can use Command Line commands to do so. (For more on the Command Line, check out "Unix 101" in the GitHub repo).<a class="anchor-link" href="#We-can-use-Command-Line-commands-to-do-so.-(For-more-on-the-Command-Line,-check-out-&quot;Unix-101&quot;-in-the-GitHub-repo).">&#182;</a></h3><h3 id="*Please-note-that-the-following-bash-commands-(!pwd-and-!ls)-will-not-work-if-you-are-using-Google-Colab.-If-you-are-using-Google-Colab,-on-the-left-hand-of-your-UI,-click-&quot;Files&quot;-&gt;&gt;-&quot;Upload&quot;-&gt;&gt;-and-select-your-CSV"><em>*Please note that the following bash commands (!pwd and !ls) will not work if you are using Google Colab. If you are using Google Colab, on the left hand of your UI, click "Files" &gt;&gt; "Upload" &gt;&gt; and select your CSV</em><a class="anchor-link" href="#*Please-note-that-the-following-bash-commands-(!pwd-and-!ls)-will-not-work-if-you-are-using-Google-Colab.-If-you-are-using-Google-Colab,-on-the-left-hand-of-your-UI,-click-&quot;Files&quot;-&gt;&gt;-&quot;Upload&quot;-&gt;&gt;-and-select-your-CSV">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13186,7 +13186,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ls</span> <span class="c1"># list all of the files in the current directory (remember, directory = folder in UI world)..</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls # list all of the files in the current directory <span class="o">(</span>remember, <span class="nv">directory</span> <span class="o">=</span> folder in UI world<span class="o">)</span>..
 </pre></div>
 
     </div>
@@ -13208,7 +13208,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./SternTech_UserData.csv&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="c1"># read in the csv</span>
 
-<span class="c1"># we are setting our dataset equal to the value &#39;df&#39;.</span>
+<span class="c1"># we are setting our dataset equal to the value &#39;df&#39; for &#39;dataframe&#39;.</span>
 <span class="c1"># we can name this anything at all, it doesn&#39;t matter.</span>
 <span class="c1"># df is commonplace, though, and stands for &#39;data frame&#39;.</span>
 
@@ -13309,7 +13309,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span> <span class="c1"># get the basic statitical metrics for a data frame</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="c1"># get the basic statitical metrics for a data frame</span>
 </pre></div>
 
     </div>
@@ -13465,6 +13465,13 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="A-qick-note:-'loc'-gets-rows-or-columns-with-particular-labels-from-the-index,-whereas-iloc-gets-rows-or-columns-at-a-particular-position-in-the-index-(aka,-it-only-accepts-integers).">A qick note: 'loc' gets rows or columns with particular <em>labels</em> from the index, whereas iloc gets rows or columns at a particular <em>position</em> in the index (aka, it only accepts integers).<a class="anchor-link" href="#A-qick-note:-'loc'-gets-rows-or-columns-with-particular-labels-from-the-index,-whereas-iloc-gets-rows-or-columns-at-a-particular-position-in-the-index-(aka,-it-only-accepts-integers).">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
@@ -13515,9 +13522,22 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="That's-a-lot,-I-know.-Next-class-we-will-continue-using-Pandas-and-some-other-Python-libraries-to-delve-further-into-the-world-of-descriptive-analytics.">That's a lot, I know. Next class we will continue using Pandas and some other Python libraries to delve further into the world of descriptive analytics.<a class="anchor-link" href="#That's-a-lot,-I-know.-Next-class-we-will-continue-using-Pandas-and-some-other-Python-libraries-to-delve-further-into-the-world-of-descriptive-analytics.">&#182;</a></h2><h2 id="For-now,-take-some-time-to-review-this-notebook-and-keep-practicing!">For now, take some time to review this notebook and keep practicing!<a class="anchor-link" href="#For-now,-take-some-time-to-review-this-notebook-and-keep-practicing!">&#182;</a></h2>
+<h2 id="Next-class-we-will-continue-using-Pandas-and-some-other-Python-libraries-to-delve-further-into-the-world-of-descriptive-analytics.-For-now,-take-some-time-to-review-this-notebook-and-keep-practicing!">Next class we will continue using Pandas and some other Python libraries to delve further into the world of descriptive analytics. For now, take some time to review this notebook and keep practicing!<a class="anchor-link" href="#Next-class-we-will-continue-using-Pandas-and-some-other-Python-libraries-to-delve-further-into-the-world-of-descriptive-analytics.-For-now,-take-some-time-to-review-this-notebook-and-keep-practicing!">&#182;</a></h2>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
 </div>
     </div>
   </div>
