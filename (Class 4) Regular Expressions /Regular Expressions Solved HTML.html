@@ -13116,7 +13116,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="All-material-&#169;2019,-Alex-Siegman">All material &#169;2019, Alex Siegman<a class="anchor-link" href="#All-material-&#169;2019,-Alex-Siegman">&#182;</a></h1>
+<h1 id="Regular-Expressions">Regular Expressions<a class="anchor-link" href="#Regular-Expressions">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13131,14 +13131,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Regular-Expressions">Regular Expressions<a class="anchor-link" href="#Regular-Expressions">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Regular-expressions-are-like-pattern-matchers-&#8211;&#160;they-allow-us-to-match-certain-texts-within-a-larger-block-of-text.-But,-unlike-a-Command+F-search,-regular-expressions-allow-you-to-be-flexible.">Regular expressions are like pattern matchers &#8211;&#160;they allow us to match certain texts within a larger block of text. But, unlike a Command+F search, regular expressions allow you to be flexible.<a class="anchor-link" href="#Regular-expressions-are-like-pattern-matchers-&#8211;&#160;they-allow-us-to-match-certain-texts-within-a-larger-block-of-text.-But,-unlike-a-Command+F-search,-regular-expressions-allow-you-to-be-flexible.">&#182;</a></h3><h3 id="To-best-understand,-let's-delve-right-into-an-example.--I-have-copied-the-text-from-http://obamaspeeches.com/-into-a-.txt-file-for-ease-of-reading.-This-file-represents-the-full-text-of-Obama's-2009-Inauguration-Speech.">To best understand, let's delve right into an example.  I have copied the text from <a href="http://obamaspeeches.com/">http://obamaspeeches.com/</a> into a .txt file for ease of reading. This file represents the full text of Obama's 2009 Inauguration Speech.<a class="anchor-link" href="#To-best-understand,-let's-delve-right-into-an-example.--I-have-copied-the-text-from-http://obamaspeeches.com/-into-a-.txt-file-for-ease-of-reading.-This-file-represents-the-full-text-of-Obama's-2009-Inauguration-Speech.">&#182;</a></h3>
+<h2 id="Regular-expressions-(regex's)-are-like-pattern-matchers-&#8211;&#160;they-allow-us-to-match-certain-texts-within-a-larger-block-of-text.-But,-unlike-a-Command+F-search,-regular-expressions-allow-you-to-be-flexible.">Regular expressions (regex's) are like pattern matchers &#8211;&#160;they allow us to match certain texts within a larger block of text. But, unlike a Command+F search, regular expressions allow you to be flexible.<a class="anchor-link" href="#Regular-expressions-(regex's)-are-like-pattern-matchers-&#8211;&#160;they-allow-us-to-match-certain-texts-within-a-larger-block-of-text.-But,-unlike-a-Command+F-search,-regular-expressions-allow-you-to-be-flexible.">&#182;</a></h2><h2 id="To-best-understand,-let's-delve-right-into-an-example.">To best understand, let's delve right into an example.<a class="anchor-link" href="#To-best-understand,-let's-delve-right-into-an-example.">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13147,55 +13140,28 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># first, we are going to open the .txt file </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># The code below from Panos Ipeirotis is written in Python to replicate the behavior of grep, the UNIX utility</span>
 
-<span class="n">sentences</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/Users/siegmanA/Desktop/NYU-Projects-in-Programming-Fall-2019/(Class 4) Regular Expressions /Obama_2009_InauguralAddress.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>    
-    
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The object &#39;sentences&#39; is of type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">sentences</span><span class="p">))</span> <span class="c1"># let&#39;s see how our sentences are being stored in Python</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentences</span><span class="p">),</span> <span class="s2">&quot;sentences in the list&quot;</span><span class="p">)</span> <span class="c1"># how many sentences are there?</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># print a new line just for ease of reading</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span> <span class="c1"># let&#39;s see all of our sentences</span>
-</pre></div>
+<span class="k">def</span> <span class="nf">printMatches</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">regex_expression</span><span class="p">):</span>
+    <span class="n">BACKGROUND_YELLOW</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">[43m&#39;</span>
+    <span class="n">COLOR_RESET</span>  <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
+    <span class="n">regex</span><span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regex_expression</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+        <span class="n">highlighted</span>  <span class="o">=</span> <span class="n">text</span><span class="p">[:</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span> <span class="c1"># the string before the regex match</span>
+        <span class="n">highlighted</span> <span class="o">+=</span> <span class="n">BACKGROUND_YELLOW</span> <span class="o">+</span> <span class="n">text</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">():</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()]</span> <span class="o">+</span> <span class="n">COLOR_RESET</span> 
+        <span class="n">highlighted</span> <span class="o">+=</span> <span class="n">text</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span> <span class="c1"># the string after the regex match</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">highlighted</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sentences</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># what about the first ten sentences?</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="You'll-see-that-there's-a-lot-of-ugly-formatting-involved.-Luckly,-we-can-strip-all-of-that-extraneous-content.">You'll see that there's a lot of ugly formatting involved. Luckly, we can strip all of that extraneous content.<a class="anchor-link" href="#You'll-see-that-there's-a-lot-of-ugly-formatting-involved.-Luckly,-we-can-strip-all-of-that-extraneous-content.">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_sentences</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span> 
-    <span class="n">new_sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-    
-<span class="c1"># you could also write the above loop as: new_sentences.append(i.splitlines()) for i in sentences</span>
-    
-<span class="nb">print</span><span class="p">(</span><span class="n">new_sentences</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">grep</span><span class="p">(</span><span class="n">regex_expression</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="n">printMatches</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">regex_expression</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13206,7 +13172,15 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Now,-let's-delve-right-in!">Now, let's delve right in!<a class="anchor-link" href="#Now,-let's-delve-right-in!">&#182;</a></h3>
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="For-today's-class,-we'll-be-taking-a-look-at--the-&quot;Capital-Project-Tracker&quot;-from-NYC-Open-Data.">For today's class, we'll be taking a look at  the "Capital Project Tracker" from NYC Open Data.<a class="anchor-link" href="#For-today's-class,-we'll-be-taking-a-look-at--the-&quot;Capital-Project-Tracker&quot;-from-NYC-Open-Data.">&#182;</a></h2><h2 id="##-One-of-the-first-things-you-may-want-to-do-is-search-for-a-literal-&#8211;&#160;simply-match-the-exact-text-in-the-document-in-question.-For-instance,-if-we-want-to-find-any-mention-of-the-word,-&quot;Highway&quot;...">## One of the first things you may want to do is search for a literal &#8211;&#160;simply match the exact text in the document in question. For instance, if we want to find any mention of the word, "Highway"...<a class="anchor-link" href="###-One-of-the-first-things-you-may-want-to-do-is-search-for-a-literal-&#8211;&#160;simply-match-the-exact-text-in-the-document-in-question.-For-instance,-if-we-want-to-find-any-mention-of-the-word,-&quot;Highway&quot;...">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13215,8 +13189,20 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">re</span> <span class="k">import</span> <span class="n">search</span> <span class="c1"># import the search function from the regular expression (re) library</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;Highway&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;[Bb]asketball&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13227,7 +13213,20 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="One-of-the-first-things-you-may-want-to-do-is-search-for-a-literal-&#8211;&#160;simply-match-the-exact-text-in-the-document-in-question.-For-instance,-if-we-want-to-find-any-mention-of-the-word,-&quot;America&quot;...">One of the first things you may want to do is search for a literal &#8211;&#160;simply match the exact text in the document in question. For instance, if we want to find any mention of the word, "America"...<a class="anchor-link" href="#One-of-the-first-things-you-may-want-to-do-is-search-for-a-literal-&#8211;&#160;simply-match-the-exact-text-in-the-document-in-question.-For-instance,-if-we-want-to-find-any-mention-of-the-word,-&quot;America&quot;...">&#182;</a></h3>
+<h2 id="That's-all-fine-and-well,-but-the-goal-here-is-to-leverage-the-power-and-flexibility-of-regular-expressions.-That's-where-atoms-come-into-play.">That's all fine and well, but the goal here is to leverage the power and flexibility of regular expressions. That's where atoms come into play.<a class="anchor-link" href="#That's-all-fine-and-well,-but-the-goal-here-is-to-leverage-the-power-and-flexibility-of-regular-expressions.-That's-where-atoms-come-into-play.">&#182;</a></h2><h2 id="The-simplest-regular-expressions-are-a-sequence-of-atoms,-which-can-be:">The simplest regular expressions are a sequence of atoms, which can be:<a class="anchor-link" href="#The-simplest-regular-expressions-are-a-sequence-of-atoms,-which-can-be:">&#182;</a></h2><ul>
+<li>a single character, </li>
+<li>a dot, </li>
+<li>a bracket expression, </li>
+<li>an anchor </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-dot-(.)-atom-matches-any-single-character-other-than-\n-(newline)">The dot (.) atom matches any single character other than \n (newline)<a class="anchor-link" href="#The-dot-(.)-atom-matches-any-single-character-other-than-\n-(newline)">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13236,9 +13235,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span><span class="p">:</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;America&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;Avenue . and&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13251,7 +13248,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;America&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;Avenue . and Avenue .&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13262,7 +13259,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="What-if-we-aren't-looking-for-a-proper-noun,-but-rather-for-the-word-'homes'-&#8211;&#160;it-could-be-spelled-'homes'-or-'Homes'-depending-on-where-in-the-sentence-it-is.">What if we aren't looking for a proper noun, but rather for the word 'homes' &#8211;&#160;it could be spelled 'homes' or 'Homes' depending on where in the sentence it is.<a class="anchor-link" href="#What-if-we-aren't-looking-for-a-proper-noun,-but-rather-for-the-word-'homes'-&#8211;&#160;it-could-be-spelled-'homes'-or-'Homes'-depending-on-where-in-the-sentence-it-is.">&#182;</a></h3><h3 id="Rather-than-write-two-different-literal-searches,-we-can-do-this:">Rather than write two different literal searches, we can do this:<a class="anchor-link" href="#Rather-than-write-two-different-literal-searches,-we-can-do-this:">&#182;</a></h3>
+<h2 id="A-bracket-expression-defines-a-set-of-characters-of-which-only-one-needs-to-be-matched">A bracket expression defines a set of characters of which only one needs to be matched<a class="anchor-link" href="#A-bracket-expression-defines-a-set-of-characters-of-which-only-one-needs-to-be-matched">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13271,7 +13268,20 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;[Hh]omes&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span> <span class="c1"># looking for upper or lower-case &#39;h&#39; followed by &#39;omes&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;Avenue [FG]&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;[Pp]layground&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13282,11 +13292,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="It's-important-to-note-that-putting-a-backslach-\-before-a-special-metacharacter-let's-you-include-that-metacharacter-as-a-literal.">It's important to note that putting a backslach \ before a special metacharacter let's you include that metacharacter as a literal.<a class="anchor-link" href="#It's-important-to-note-that-putting-a-backslach-\-before-a-special-metacharacter-let's-you-include-that-metacharacter-as-a-literal.">&#182;</a></h3><p>For instance, if I'm looking for a dollar value in a text, and wanted to search for the '$' symbol, I would have to type:</p>
-<blockquote><p>re.search("\$)</p>
-</blockquote>
-<p>in order to look for it.</p>
-<h3 id="To-illustrate,-imagine-we-have-a-new-text:">To illustrate, imagine we have a new text:<a class="anchor-link" href="#To-illustrate,-imagine-we-have-a-new-text:">&#182;</a></h3>
+<h2 id="You-can-also-incorporate-ranges-into-your-brackets.-For-instance,-we-want-the-word-&quot;East&quot;-followed-by-any-three-numbers:">You can also incorporate ranges into your brackets. For instance, we want the word "East" followed by any three numbers:<a class="anchor-link" href="#You-can-also-incorporate-ranges-into-your-brackets.-For-instance,-we-want-the-word-&quot;East&quot;-followed-by-any-three-numbers:">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13295,7 +13301,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;In 2019 profits rose by $4,000,000&quot;</span><span class="p">,</span><span class="s2">&quot;This is the first time that profits have rose by more than %40 in a decade.&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;East [0-9][0-9][0-9]&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13308,27 +13314,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="You'll-see-this-returns-both-of-our-setnences.-That's-because-dollar-sign-is-a-special-character-(which-we'll-discuss-in-a-moment).-But-ultimately,-to-search-for-the-literal-dollar-symbol,-we-use-the-backslach-to-&quot;escape&quot;-that-special-character.">You'll see this returns both of our setnences. That's because dollar sign is a special character (which we'll discuss in a moment). But ultimately, to search for the literal dollar symbol, we use the backslach to "escape" that special character.<a class="anchor-link" href="#You'll-see-this-returns-both-of-our-setnences.-That's-because-dollar-sign-is-a-special-character-(which-we'll-discuss-in-a-moment).-But-ultimately,-to-search-for-the-literal-dollar-symbol,-we-use-the-backslach-to-&quot;escape&quot;-that-special-character.">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;\$&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;East [0-9][0-9][^0-9]&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13339,9 +13325,11 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dealing-with-'metacharacters'">Dealing with 'metacharacters'<a class="anchor-link" href="#Dealing-with-'metacharacters'">&#182;</a></h2><p>Metacharacters include "  \ ^ $ . | ? * + ( ) [ ] and \</p>
-<p>These metacharacters help us match various, non-literal components of a sentence. For instance, the search:</p>
-<p>re.search("^I think",sentence) means that you are searching for the words "I think" at the start of a line (that's what the '^' represents.</p>
+<h2 id="Anchors-are-atoms-used-to-define-the-location-of-a-regex-within-a-line-:">Anchors are atoms used to define the location of a regex within a line :<a class="anchor-link" href="#Anchors-are-atoms-used-to-define-the-location-of-a-regex-within-a-line-:">&#182;</a></h2><ul>
+<li>the '^' anchor specifies the beginning of the line </li>
+<li>the '$' anchor specifies the end of a line</li>
+<li>the '\b' anchor specifies a word boundry </li>
+</ul>
 
 </div>
 </div>
@@ -13351,7 +13339,20 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;^My&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;^Summary This project will reconstruct&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;^Summary This project will construct&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13362,7 +13363,31 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="To-gain-insight-into-what-your-regular-expression-is-doing-at-any-time,-I-highly-recommend-using-regexper.com-(https://regexper.com/)-which-will-allow-you-to-see-exactly-what-a-given-search-is-doing.">To gain insight into what your regular expression is doing at any time, I highly recommend using regexper.com (<a href="https://regexper.com/">https://regexper.com/</a>) which will allow you to see exactly what a given search is doing.<a class="anchor-link" href="#To-gain-insight-into-what-your-regular-expression-is-doing-at-any-time,-I-highly-recommend-using-regexper.com-(https://regexper.com/)-which-will-allow-you-to-see-exactly-what-a-given-search-is-doing.">&#182;</a></h3><p>For instance, check out <a href="https://regexper.com/#%5EMy%0A">https://regexper.com/#%5EMy%0A</a> to see what we just did with '^My'</p>
+<h2 id="Some-more-basic-patterns-and-metacharacters'">Some more basic patterns and metacharacters'<a class="anchor-link" href="#Some-more-basic-patterns-and-metacharacters'">&#182;</a></h2><ul>
+<li>. (dot) matches any character except \n (newline) </li>
+<li>\t matches a tab</li>
+<li>\n matches a newline </li>
+<li>\r matches return </li>
+<li>^ matches the start of a string</li>
+<li>$ matches the end of a string</li>
+</ul>
+<h2 id="Metacharacters-include-&quot;--\-^-$-.-|-?-*-+-(-)-[-]-and-\">Metacharacters include "  \ ^ $ . | ? * + ( ) [ ] and \<a class="anchor-link" href="#Metacharacters-include-&quot;--\-^-$-.-|-?-*-+-(-)-[-]-and-\">&#182;</a></h2><p>These metacharacters help us match various, non-literal components of a sentence. In order to 'escape' them (aka, to search for that symbol itself) you need to proceed it with a backslash ()</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="To-gain-insight-into-what-your-regular-expression-is-doing-at-any-time,-I-highly-recommend-using-regexper.com-(https://regexper.com/)-which-will-allow-you-to-see-exactly-what-a-given-search-is-doing.">To gain insight into what your regular expression is doing at any time, I highly recommend using regexper.com (<a href="https://regexper.com/">https://regexper.com/</a>) which will allow you to see exactly what a given search is doing.<a class="anchor-link" href="#To-gain-insight-into-what-your-regular-expression-is-doing-at-any-time,-I-highly-recommend-using-regexper.com-(https://regexper.com/)-which-will-allow-you-to-see-exactly-what-a-given-search-is-doing.">&#182;</a></h2><p>For instance, check out <a href="https://regexper.com/#%5EMy%0A">https://regexper.com/#%5EMy%0A</a> to see what we just did with '^My'</p>
 <p>Here is a good cheat sheet for all the special characters, too, From Emma Wedekind: <a href="https://dev.to/emmawedekind/regex-cheat-sheet-2j2a">https://dev.to/emmawedekind/regex-cheat-sheet-2j2a</a></p>
 <p>Finally, I'd also recommend RegEx101, a handy debugger for regular expressions: <a href="https://regex101.com/">https://regex101.com/</a></p>
 
@@ -13372,253 +13397,25 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Here-are-some-more-regex-special-character-examples:">Here are some more regex special character examples:<a class="anchor-link" href="#Here-are-some-more-regex-special-character-examples:">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;sights.$&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># the &#39;.&#39; represents a wildcard (it can refer to any character)</span>
-<span class="c1"># the &#39;$&#39; represents the end of a sentence</span>
-<span class="c1"># thus, we are looking for a sentence that ends in, &quot;remember.&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
+<hr>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;[0-9]&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># the &#39;[0-9]&#39; will match any integer, 0-9. s you&#39;ll see, it matches &#39;9211&#39; which isn&#39;t really part of the text, </span>
-<span class="c1"># but is part of the formatting. Still, it works!</span>
-</pre></div>
-
-    </div>
 </div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;[^?.]$&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># the pattern *&quot;[^?.]\$&quot;* will match sentences that don&#39;t end in a period or a question mark </span>
-<span class="c1"># it&#39;s important to note that you don&#39;t have to &quot;escape&quot; (backslach) characters in a character class -- or </span>
-<span class="c1"># between [ and ]) </span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;remember|forget&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># the &#39;remeber|forget&#39; means we&#39;re searching for either &#39;remember&#39; or &#39;forget&#39;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;day|month|year&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># you can also search with multiple &quot;or&quot; statements</span>
-<span class="c1"># here, we are looking for either the word &quot;day&quot;, &quot;month&quot;, or &quot;year&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;^[Tt]oday|OK\?$&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># this is complex, but we&#39;re looking for a sentence that either starts with &quot;Today&quot; or &quot;today&quot; or that ends with &quot;OK?&quot;</span>
-<span class="c1"># check https://regexper.com/#%5E%5BWw%5Datch%7COK%5C?%24 for a graphical representation </span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;^We.*&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># the \* and + signs are metacharacters used to indicate repetition</span>
-<span class="c1"># \* means “any number, including zero, of the item” </span>
-<span class="c1"># + means “at least one of the item”</span>
-
-<span class="c1"># above, we&#39;re looking for the word &quot;We&quot; that starts a sentence, followed by any character, any number of times</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># {} are known as &quot;interval quantifiers&quot; that let us specify the number of matches we want </span>
-
-<span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">new_sentences</span> <span class="k">if</span> <span class="n">search</span><span class="p">(</span><span class="s2">&quot;We (</span><span class="se">\\</span><span class="s2">w+ ){1,7}nation&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)]</span>
-
-<span class="c1"># this one is tricky...</span>
-<span class="c1"># first, we are looking for the word &quot;We&quot;...</span>
-<span class="c1"># then, (\\w+ ) stands for &quot;any letter or number&quot;, and the {1,7} means we are looking for any letter or number 1 to 7 times</span>
-<span class="c1"># then we are looking for the word &quot;nation&quot;</span>
-
-<span class="c1"># thus, we are looking for &quot;We&quot;, then between 1 and 7 (inclusive) words, then the word &quot;nation&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-about-a-more-complex-document,-now?-A-PDF,-perhaps?">What about a more complex document, now? A PDF, perhaps?<a class="anchor-link" href="#What-about-a-more-complex-document,-now?-A-PDF,-perhaps?">&#182;</a></h2><h3 id="For-more-on-PyPDF2,-check-out-https://pythonhosted.org/PyPDF2/"><em>For more on PyPDF2, check out <a href="https://pythonhosted.org/PyPDF2/">https://pythonhosted.org/PyPDF2/</a></em><a class="anchor-link" href="#For-more-on-PyPDF2,-check-out-https://pythonhosted.org/PyPDF2/">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install PyPDF2
-</pre></div>
-
-    </div>
-</div>
-</div>
+<h2 id="Some-Shortcuts:">Some Shortcuts:<a class="anchor-link" href="#Some-Shortcuts:">&#182;</a></h2><ul>
+<li>\d: matches digits 0-9</li>
+<li>\D matches anything but \d</li>
+<li>\w matches any alphanumeric character plus underscore </li>
+<li>\W matches anything but \w </li>
+<li>\s matches any "whitespace character (space, tab, newline) </li>
+<li>\S matches anything but \s</li>
+</ul>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">PyPDF2</span> <span class="k">import</span> <span class="n">PdfFileReader</span>
-
-<span class="c1"># open the file for &#39;reading&#39; and signal that the data inside might be &#39;binary&#39;</span>
-<span class="c1"># let&#39;s read&#39;Statistics Manual by Edwin L. Crow, Frances A. Davis, and Margaret W. Maxfield&#39; for the heck of it</span>
-
-<span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/Users/siegmanA/Desktop/NYU-Projects-in-Programming-Fall-2019/(Class 4) Regular Expressions /2019Q1_alphabet_earnings_release.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-
-<span class="c1"># use the file to create a PDF reader object to extract the text</span>
-<span class="n">pdf</span> <span class="o">=</span> <span class="n">PdfFileReader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-<span class="nb">type</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
-</pre></div>
-
-    </div>
 </div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># let&#39;s see what sorts of things we can do: </span>
-
-<span class="n">help</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pdf</span><span class="o">.</span><span class="n">numPages</span> <span class="c1"># how many pages in our pdf? </span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">page</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">getPage</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># let&#39;s take a look at page 33 of our pdf...</span>
-
-<span class="n">page</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">extractText</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">page</span><span class="p">)</span> <span class="c1"># and print just the text</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># and, last but not least, some regular expressions to prove we&#39;ve got everything we need: </span>
-
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">re</span> <span class="k">import</span> <span class="n">search</span> <span class="c1"># import the search function from the regular expression (re) library</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;Research&quot;</span><span class="p">,</span><span class="n">page</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13631,7 +13428,487 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Next-week-we'll-take-our-knowledge-of-regular-expressions-and-marry-it-with-our-soon-to-be-web-scraping-skills.">Next week we'll take our knowledge of regular expressions and marry it with our soon-to-be web scraping skills.<a class="anchor-link" href="#Next-week-we'll-take-our-knowledge-of-regular-expressions-and-marry-it-with-our-soon-to-be-web-scraping-skills.">&#182;</a></h2>
+<h2 id="Operators:">Operators:<a class="anchor-link" href="#Operators:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-'alternation'-operator-defines-one-or-more-alternatives-that-need-to-be-true-to-return-a-match:">The 'alternation' operator defines one or more alternatives that need to be true to return a match:<a class="anchor-link" href="#The-'alternation'-operator-defines-one-or-more-alternatives-that-need-to-be-true-to-return-a-match:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;^Summary This project will (partially|expand)&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-repetition-operator-specifies-that-the-symbol-to-be-matched-may-be-repeated:">The repetition operator specifies that the symbol to be matched may be repeated:<a class="anchor-link" href="#The-repetition-operator-specifies-that-the-symbol-to-be-matched-may-be-repeated:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Repetition-Shortcuts:">Repetition Shortcuts:<a class="anchor-link" href="#Repetition-Shortcuts:">&#182;</a></h3><ul>
+<li><ul>
+<li>= {0,} The * character means match the previous atom zero or more times</li>
+</ul>
+</li>
+<li><ul>
+<li>= {1,} The + character means match the previous atom one or more times</li>
+</ul>
+</li>
+<li>? = {0,1} The ? character means match the previous atom zero or one times</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;Summary .{400,}$&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Group-Operator">Group Operator<a class="anchor-link" href="#Group-Operator">&#182;</a></h2><h3 id="In-the-group-operator,-when-a-group-of-characters-is-inclused-in-parantehses,-the-next-operator-applies-to-the-whole-group,-not-only-the-previous-characters">In the group operator, when a group of characters is inclused in parantehses, the next operator applies to the whole group, not only the previous characters<a class="anchor-link" href="#In-the-group-operator,-when-a-group-of-characters-is-inclused-in-parantehses,-the-next-operator-applies-to-the-whole-group,-not-only-the-previous-characters">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grep</span><span class="p">(</span><span class="s1">&#39;name.* (\d){3,} .*&#39;</span><span class="p">,</span> <span class="s1">&#39;./ParkProjects.txt&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Exercise-1:-What-do-these-regex's-match?">Exercise 1: What do these regex's match?<a class="anchor-link" href="#Exercise-1:-What-do-these-regex's-match?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># grep(&#39;^Summary .* Street.$&#39;, &#39;./ParkProjects.txt&#39;)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># grep(&#39;East (\d){2,}st&#39;, &#39;./ParkProjects.txt&#39;)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># grep(&#39;Lenox .* (Pl\.|Place)&#39;, &#39;./ParkProjects.txt&#39;)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Exercise-2:-Imagine-you-have-a-file-with-telephone-numbers-in-different-formats:">Exercise 2: Imagine you have a file with telephone numbers in different formats:<a class="anchor-link" href="#Exercise-2:-Imagine-you-have-a-file-with-telephone-numbers-in-different-formats:">&#182;</a></h2><ul>
+<li>679-397-5255</li>
+<li>2126660921</li>
+<li>212-998-0902</li>
+<li>888-888-2222</li>
+<li>800-555-1211</li>
+<li>800 555 1212</li>
+<li>800.555.1213</li>
+<li>(800) 555-1214</li>
+<li>1-800-555-1215</li>
+<li>1(800)555-1216</li>
+<li>800-555-1212-1234</li>
+<li>800-555-1212x1234</li>
+<li>800-555-1212 ext. 1234</li>
+<li>work 1-(800) 555.1212 #1234</li>
+</ul>
+<h2 id="Your-goal-is-to-standardize-everything-in-the-form-(xxx)-xxx-xxx.">Your goal is to standardize everything in the form (xxx)-xxx-xxx.<a class="anchor-link" href="#Your-goal-is-to-standardize-everything-in-the-form-(xxx)-xxx-xxx.">&#182;</a></h2><p>To make the process interactive, go to <a href="http://regex101.com/?#python">http://regex101.com/?#python</a>, copy and paste the numbers above in the text area called "Text String", and then try to write the regular expression above. (Remember to put the "g" character in the small text field next to the regex: this has the same meaning as in sed, and it means "find globally" the regex, not just the first occurence).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Python's-re-Regular-Expression-Library:">Python's re Regular Expression Library:<a class="anchor-link" href="#Python's-re-Regular-Expression-Library:">&#182;</a></h2><p><a href="https://docs.python.org/3/library/re.html">https://docs.python.org/3/library/re.html</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello, my name is Alex Siegman. Please call me back at 212 555-9583 or email me at as13815@nyu.edu at your </span><span class="se">\</span>
+<span class="s2">earliest convenience. Thank you.&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">re</span> <span class="k">import</span> <span class="n">search</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[Aa]lex&#39;</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Let's-try-and-match-for-an-email-address:">Let's try and match for an email address:<a class="anchor-link" href="#Let's-try-and-match-for-an-email-address:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\w+@\w+\..</span><span class="si">{3}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>                 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="How-about-for-a-phone-number?">How about for a phone number?<a class="anchor-link" href="#How-about-for-a-phone-number?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d</span><span class="si">{3}</span><span class="s1"> \d</span><span class="si">{3}</span><span class="s1">-\d</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-if-you-have-multiple-matches-in-the-same-string?">What if you have multiple matches in the same string?<a class="anchor-link" href="#What-if-you-have-multiple-matches-in-the-same-string?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello, my name is Alex Siegman. Please call me back at 212 555-9583 or 314 935-9981 or email me at as13815@nyu.edu at your </span><span class="se">\</span>
+<span class="s2">earliest convenience. Thank you.&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># we can use &#39;finditer&#39; that returns a collection of MatchObject items</span>
+
+<span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d</span><span class="si">{3}</span><span class="s1"> \d</span><span class="si">{3}</span><span class="s1">-\d</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matches</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;==&gt;&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+    
+<span class="c1"># FYI the &#39;search&#39; term only returns the first MatchObject item</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-Extraction">Data Extraction<a class="anchor-link" href="#Data-Extraction">&#182;</a></h2><h3 id="It's-awesome-that-we-can-return-our-matches-here-in-our-notebook,-but-what-we-really-want-to-do-is-select-the-strings-that-match-our-regex-and-return-them-to-a-program-to-be-processed.-For-example:">It's awesome that we can return our matches here in our notebook, but what we really want to do is select the strings that match our regex and return them to a program to be processed. For example:<a class="anchor-link" href="#It's-awesome-that-we-can-return-our-matches-here-in-our-notebook,-but-what-we-really-want-to-do-is-select-the-strings-that-match-our-regex-and-return-them-to-a-program-to-be-processed.-For-example:">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;(\d</span><span class="si">{3}</span><span class="s2">) # the area code</span>
+<span class="s2">                       \D* # zero or more non-digits</span>
+<span class="s2">                       (\d</span><span class="si">{3}</span><span class="s2">) # three digits</span>
+<span class="s2">                       \D* # zero or more non-digits</span>
+<span class="s2">                       (\d</span><span class="si">{4}</span><span class="s2">) # four digits</span>
+<span class="s2">                    &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">)</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Formatted:&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;===========&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-about-our-large-'file'-of-ill-formatted-phone-numbers-from-earlier?">What about our large 'file' of ill-formatted phone numbers from earlier?<a class="anchor-link" href="#What-about-our-large-'file'-of-ill-formatted-phone-numbers-from-earlier?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">raw_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">679-397-5255</span>
+<span class="s2">2126660921</span>
+<span class="s2">212-998-0902</span>
+<span class="s2">888-888-2222</span>
+<span class="s2">800-555-1211</span>
+<span class="s2">800 555 1212</span>
+<span class="s2">800.555.1213</span>
+<span class="s2">(800) 555-1214</span>
+<span class="s2">1-800-555-1215</span>
+<span class="s2">1(800)555-1216</span>
+<span class="s2">800-555-1212-1234</span>
+<span class="s2">800-555-1212x1234</span>
+<span class="s2">800-555-1212 ext. 1234</span>
+<span class="s2">work 1-(800) 555.1212 #1234</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://github.com/ipeirotis/dealing_with_data/blob/master/05-Regular_Expressions/B-Regular_Expressions_in_Python.ipynb">https://github.com/ipeirotis/dealing_with_data/blob/master/05-Regular_Expressions/B-Regular_Expressions_in_Python.ipynb</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(\d</span><span class="si">{3}</span><span class="s1">)\D*(\d</span><span class="si">{3}</span><span class="s1">)\D*(\d</span><span class="si">{4}</span><span class="s1">)&#39;</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">raw_text</span><span class="p">)</span>
+
+<span class="n">phones</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="n">area_code</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">first_three_digits</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">last_four_digits</span> <span class="o">=</span>  <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">phone</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">area_code</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="o">+</span> <span class="n">first_three_digits</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">last_four_digits</span>
+            
+    <span class="n">phones</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phone</span><span class="p">)</span>
+
+<span class="n">phones</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="String-Replacement">String Replacement<a class="anchor-link" href="#String-Replacement">&#182;</a></h2><h3 id="String-Replacement-(.sub())-allows-us-to-return-a-version-of-our-text-where-all-instances-that-matched-have-been-substituted-with-a-replacement.-For-instance,-if-we-want-to-mask-phone-numbers-in-a-document:">String Replacement (.sub()) allows us to return a version of our text where all instances that matched have been substituted with a replacement. For instance, if we want to mask phone numbers in a document:<a class="anchor-link" href="#String-Replacement-(.sub())-allows-us-to-return-a-version-of-our-text-where-all-instances-that-matched-have-been-substituted-with-a-replacement.-For-instance,-if-we-want-to-mask-phone-numbers-in-a-document:">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;(\d</span><span class="si">{3}</span><span class="s1">)\D*(\d</span><span class="si">{3}</span><span class="s1">)\D*(\d</span><span class="si">{4}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+<span class="n">newstring</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="s2">&quot;XXX-XXX-XXXX&quot;</span><span class="p">,</span> <span class="n">raw_text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">newstring</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Exercise-3:-Go-to-http://www.stern.nyu.edu/faculty/search_name_form/-and-write-a-script-to-parse-the-email-address-from-the-first-page:">Exercise 3: Go to <a href="http://www.stern.nyu.edu/faculty/search_name_form/">http://www.stern.nyu.edu/faculty/search_name_form/</a> and write a script to parse the email address from the first page:<a class="anchor-link" href="#Exercise-3:-Go-to-http://www.stern.nyu.edu/faculty/search_name_form/-and-write-a-script-to-parse-the-email-address-from-the-first-page:">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.stern.nyu.edu/faculty/search_name_form&#39;</span>
+
+<span class="n">html</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">emails</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span> <span class="c1"># set doesn&#39;t allow for duplicates, FYI</span>
+
+<span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\w+@\w+\.nyu\.edu&#39;</span>
+<span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="n">emails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+
+<span class="nb">sorted</span><span class="p">(</span><span class="n">emails</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
 </div>
 </div>
 </div>
