@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>BeautifulSoup Solved</title>
+<title>Web Scraping Solved</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,7 +13116,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Web-Scraping">Web Scraping<a class="anchor-link" href="#Web-Scraping">&#182;</a></h2>
+<h1 id="Web-Scraping">Web Scraping<a class="anchor-link" href="#Web-Scraping">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13131,7 +13131,10 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="There-is-a-LOT-of-useful-information-onthe-internet,-and-as-data-scientists-you'll-often-need-access-to-that-information.">There is a LOT of useful information onthe internet, and as data scientists you'll often need access to that information.<a class="anchor-link" href="#There-is-a-LOT-of-useful-information-onthe-internet,-and-as-data-scientists-you'll-often-need-access-to-that-information.">&#182;</a></h3><h3 id="Unfortunatley,-rarely-is-that-information-contained-neatly-in-CSVs-or-even-in-tabular-form.-Rather,-you-have-to-really-work-to-get-what-you-need.">Unfortunatley, rarely is that information contained neatly in CSVs or even in tabular form. Rather, you have to really work to get what you need.<a class="anchor-link" href="#Unfortunatley,-rarely-is-that-information-contained-neatly-in-CSVs-or-even-in-tabular-form.-Rather,-you-have-to-really-work-to-get-what-you-need.">&#182;</a></h3><h3 id="Lucky-for-us,-there-are-some-useful-tools-for-&quot;scraping&quot;-the-web-&#8211;&#160;in-particular,-one-called-BeautifulSoup-(https://www.crummy.com/software/BeautifulSoup/bs4/doc/)">Lucky for us, there are some useful tools for "scraping" the web &#8211;&#160;in particular, one called BeautifulSoup (<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">https://www.crummy.com/software/BeautifulSoup/bs4/doc/</a>)<a class="anchor-link" href="#Lucky-for-us,-there-are-some-useful-tools-for-&quot;scraping&quot;-the-web-&#8211;&#160;in-particular,-one-called-BeautifulSoup-(https://www.crummy.com/software/BeautifulSoup/bs4/doc/)">&#182;</a></h3>
+<p>There is a LOT of useful information onthe internet, and as data scientists you'll often need access to that information.</p>
+<p>Unfortunatley, rarely is that information contained neatly in CSVs or even in tabular form. Rather, you have to really work to get what you need.</p>
+<p>Lucky for us, there are some useful tools for "scraping" the web – in particular, one called BeautifulSoup (<a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">https://www.crummy.com/software/BeautifulSoup/bs4/doc/</a>)</p>
+
 </div>
 </div>
 </div>
@@ -13156,83 +13159,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Before-we-delve-in,-here's-an-example-of-the-power-of-BeautifulSoup:">Before we delve in, here's an example of the power of BeautifulSoup:<a class="anchor-link" href="#Before-we-delve-in,-here's-an-example-of-the-power-of-BeautifulSoup:">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># the file attached is a simple csv containing 100 unique URLs from WSJ.com</span>
-<span class="c1"># the script in this cell allows us to find the word count for each article (stored in the article metadata) via the URL</span>
-
-<span class="n">url_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># create an empty list called &#39;url_list&#39; where we will store all of the URL&#39;s in question</span>
-
-<span class="n">word_count_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># create an empty list called &#39;word_count_list&#39; where we will store the word counts associated  </span>
-                     <span class="c1"># with each URL in our &#39;url_list&#39;</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;URLS_for_WordCount.csv&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
-          <span class="c1"># note that you will have to navigate to wherever it is you have stored your csv as a pathname</span>
-        
-    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">)</span> <span class="c1"># this allows us to map our information in each row to an OrderedDictionary </span>
-                                     <span class="c1"># for more on DictReader see https://docs.python.org/3/library/csv.html</span>
-    
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span> <span class="c1"># for every row in our csv, aka, for every dictionary entry (which is composed of our URLs)...</span>
-        
-        <span class="c1"># NB: you can use &quot;print(row)&quot; here to see what our ordered dictionary looks like </span>
-        
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> <span class="c1"># for every key, value pair in our ordered dictionary...</span>
-            
-            <span class="c1"># NB: again, you can use &quot;print(k)&quot; or &quot;print(v)&quot; here to see what our key, value pairs look like </span>
-
-            <span class="n">url_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="c1"># add the URL to our &quot;url_list&quot;</span>
-            
-            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="c1"># for more on the requests library check out this tutorial from RealPython: </span>
-                                <span class="c1"># https://realpython.com/python-requests/</span>
-            
-            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span><span class="s1">&#39;html&#39;</span><span class="p">)</span> <span class="c1"># we are going to turn that URL into &#39;soup&#39;, aka, we are going to be </span>
-                                                <span class="c1"># able to see it&#39;s metadata For more on BeautifulSoup, check out: </span>
-                                                <span class="c1"># https://www.crummy.com/software/BeautifulSoup/bs4/doc/</span>
-            
-            <span class="n">wc1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="o">=</span><span class="s2">&quot;article:word_count&quot;</span><span class="p">))</span> <span class="c1"># we want to find the word_count associated </span>
-                                                                        <span class="c1"># with each URL, found in the HTML that we </span>
-                                                                        <span class="c1"># have just &quot;souped&quot;</span>
-            
-            <span class="n">wc2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span><span class="n">wc1</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># we use regular expressions to find the first number in the associated</span>
-            <span class="c1"># metadata, and store that. For more on regex see this great tutorial (not from me): https://regexr.com/</span>
-        
-            <span class="n">word_count_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wc2</span><span class="p">)</span> <span class="c1"># finally, we add (append) our word count to our &quot;word_count_list&quot;</span>
-
-        <span class="k">break</span> 
-            
-<span class="nb">print</span><span class="p">(</span><span class="n">word_count_list</span><span class="p">)</span> <span class="c1"># just to make sure everything works as planned</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span> <span class="c1"># again, just to make sure everything works as planned      </span>
-
-<span class="c1"># the code below will create a new csv, called &quot;URL_for_WordCount_with_WordCounts.csv&quot; in our current directory&quot;</span>
-<span class="c1"># for more on csv.writer check out: https://docs.python.org/3/library/csv.html</span>
-
-<span class="sd">&quot;&quot;&quot; </span>
-
-<span class="sd">myData = url_list,word_count_list </span>
-<span class="sd">myFile = open(&#39;URL_for_WordCount_with_WordCounts.csv&#39;, &#39;w&#39;)  </span>
-<span class="sd">with myFile:  </span>
-<span class="sd">   writer = csv.writer(myFile)</span>
-<span class="sd">   writer.writerows(myData)</span>
-<span class="sd">   </span>
-<span class="sd">&quot;&quot;&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Now,-back-to-BeautifulSoup-basics:">Now, back to BeautifulSoup basics:<a class="anchor-link" href="#Now,-back-to-BeautifulSoup-basics:">&#182;</a></h3>
+<h2 id="BeautifulSoup"><code>BeautifulSoup</code><a class="anchor-link" href="#BeautifulSoup">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13258,7 +13185,16 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="What-you're-seeing-above-is-the-HTML-for-the-NYT-homepage.-Let's-continue-with-a-few-basics:">What you're seeing above is the HTML for the NYT homepage. Let's continue with a few basics:<a class="anchor-link" href="#What-you're-seeing-above-is-the-HTML-for-the-NYT-homepage.-Let's-continue-with-a-few-basics:">&#182;</a></h3>
+<p>What you're seeing above is the HTML for the NYT homepage. Let's continue with a few basics:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="soup.title"><code>soup.title</code><a class="anchor-link" href="#soup.title">&#182;</a></h2><p>Finds the title of a page</p>
+
 </div>
 </div>
 </div>
@@ -13267,28 +13203,41 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">title</span> <span class="c1"># let&#39;s find the title of the page</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">title</span> 
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="soup.title.string"><code>soup.title.string</code><a class="anchor-link" href="#soup.title.string">&#182;</a></h2><p>Gets a string version of that same title</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">string</span> <span class="c1"># get a string version of the title </span>
-
-<span class="c1"># note that there are some encoding issues here</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">string</span> 
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="soup.title.parent.name"><code>soup.title.parent.name</code><a class="anchor-link" href="#soup.title.parent.name">&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13304,12 +13253,20 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="soup.p"><code>soup.p</code><a class="anchor-link" href="#soup.p">&#182;</a></h2><p>Get the first paragraph tag in the HTML</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">p</span> <span class="c1"># get the first &lt;p&gt; tag in the HTML</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">p</span> 
 </pre></div>
 
     </div>
@@ -13329,6 +13286,13 @@ div#notebook {
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="soup.find_all"><code>soup.find_all</code><a class="anchor-link" href="#soup.find_all">&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -13360,7 +13324,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="It's-important-to-know-that-BeautifulSoup-transforms-HTMl-into-a-tree-of-Python-objects.-The-most-important-objects-to-know-are:">It's important to know that BeautifulSoup transforms HTMl into a tree of Python objects. The most important objects to know are:<a class="anchor-link" href="#It's-important-to-know-that-BeautifulSoup-transforms-HTMl-into-a-tree-of-Python-objects.-The-most-important-objects-to-know-are:">&#182;</a></h2><ol>
+<p>It's important to know that BeautifulSoup transforms HTMl into a tree of Python objects. The most important objects to know are:</p>
+<ol>
 <li>Tag</li>
 <li>NavigableString</li>
 <li>BeautifulSoup</li>
@@ -13372,7 +13337,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="A-tag-corresponds-to-an-XML-or-HTML-tag-in-the-original-document.-For-instance:">A tag corresponds to an XML or HTML tag in the original document. For instance:<a class="anchor-link" href="#A-tag-corresponds-to-an-XML-or-HTML-tag-in-the-original-document.-For-instance:">&#182;</a></h3>
+<h2 id="Tag"><code>Tag</code><a class="anchor-link" href="#Tag">&#182;</a></h2><p>Corresponds to an XML or HTML tag in the original document. For instance:</p>
+
 </div>
 </div>
 </div>
@@ -13419,7 +13385,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="A-string-corresponds-to-a-bit-of-text-within-a-tag.-You-use-the-NavigableString-class-to-access-that-text.">A string corresponds to a bit of text within a tag. You use the NavigableString class to access that text.<a class="anchor-link" href="#A-string-corresponds-to-a-bit-of-text-within-a-tag.-You-use-the-NavigableString-class-to-access-that-text.">&#182;</a></h3>
+<h2 id="String"><code>String</code><a class="anchor-link" href="#String">&#182;</a></h2><p>Corresponds to a bit of text within a tag. You use the NavigableString class to access that text.</p>
+
 </div>
 </div>
 </div>
@@ -13439,7 +13406,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-BeautifulSoup-object-represents-the-document-as-a-whole.">The BeautifulSoup object represents the document as a whole.<a class="anchor-link" href="#The-BeautifulSoup-object-represents-the-document-as-a-whole.">&#182;</a></h3>
+<h2 id="BeautifulSoup-object"><code>BeautifulSoup object</code><a class="anchor-link" href="#BeautifulSoup-object">&#182;</a></h2><p>Represents the document as a whole.</p>
+
 </div>
 </div>
 </div>
@@ -13459,7 +13427,113 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Navigating-the-Tree">Navigating the Tree<a class="anchor-link" href="#Navigating-the-Tree">&#182;</a></h2><h3 id="The-easiest-way-to-navigate-the-parse-tree-is-to-call-out-the-tag-you-want.">The easiest way to navigate the parse tree is to call out the tag you want.<a class="anchor-link" href="#The-easiest-way-to-navigate-the-parse-tree-is-to-call-out-the-tag-you-want.">&#182;</a></h3>
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exercise-1:">Exercise 1:<a class="anchor-link" href="#Exercise-1:">&#182;</a></h1><p>Choose any article from NYT.com and find its title.string value</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># your code here</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Solution">Solution<a class="anchor-link" href="#Solution">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://www.nytimes.com/interactive/2019/10/31/us/california-fire-evacuees.html?action=click&amp;module=Top%20Stories&amp;pgtype=Homepage&quot;</span> <span class="c1"># let&#39;s scrape the NYT homepage</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="c1"># the requests library is the easiest way to call to a URL; here we are using a GET command</span>
+
+<span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span><span class="s1">&#39;html&#39;</span><span class="p">)</span> <span class="c1"># we are going to take the result of that GET command and pass it through bs4</span>
+
+<span class="n">soup</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">string</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exercise-2">Exercise 2<a class="anchor-link" href="#Exercise-2">&#182;</a></h1><p>Find any and all hyperlinks contained in this article</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># your code here</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Solution">Solution<a class="anchor-link" href="#Solution">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Navigating-the-Tree">Navigating the Tree<a class="anchor-link" href="#Navigating-the-Tree">&#182;</a></h2><p>The easiest way to navigate the parse tree is to call out the tag you want.</p>
+
 </div>
 </div>
 </div>
@@ -13492,7 +13566,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="You-can,-of-course,-delve-deeper-into-the-parse-tree.">You can, of course, delve deeper into the parse tree.<a class="anchor-link" href="#You-can,-of-course,-delve-deeper-into-the-parse-tree.">&#182;</a></h3>
+<p>You can, of course, delve deeper into the parse tree.</p>
+
 </div>
 </div>
 </div>
@@ -13542,7 +13617,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="As-alluded-to-earlier,-it's-helpful-to-be-able-to-navigate-the-tree-step-by-step.-A-tag's-children-are-available-in-a-list-called-.contents">As alluded to earlier, it's helpful to be able to navigate the tree step-by-step. A tag's children are available in a list called .contents<a class="anchor-link" href="#As-alluded-to-earlier,-it's-helpful-to-be-able-to-navigate-the-tree-step-by-step.-A-tag's-children-are-available-in-a-list-called-.contents">&#182;</a></h3>
+<p>As alluded to earlier, it's helpful to be able to navigate the tree step-by-step. A tag's children are available in a list called .contents</p>
+
 </div>
 </div>
 </div>
@@ -13563,7 +13639,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="You-can-also-iterate-over-a-tag's-children-with-the-.children-generator">You can also iterate over a tag's children with the .children generator<a class="anchor-link" href="#You-can-also-iterate-over-a-tag's-children-with-the-.children-generator">&#182;</a></h3>
+<p>You can also iterate over a tag's children with the .children generator</p>
+
 </div>
 </div>
 </div>
@@ -13580,6 +13657,104 @@ div#notebook {
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exercise-3:">Exercise 3:<a class="anchor-link" href="#Exercise-3:">&#182;</a></h1><p>Find the first paragrap tag in the article.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># your code here</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Solution">Solution<a class="anchor-link" href="#Solution">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">p</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exercise-4:">Exercise 4:<a class="anchor-link" href="#Exercise-4:">&#182;</a></h1><p>Find all of the paragraph tags contained in the article.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># your code here</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Solution">Solution<a class="anchor-link" href="#Solution">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13647,7 +13822,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Filtering-by-CSS-Class">Filtering by CSS Class<a class="anchor-link" href="#Filtering-by-CSS-Class">&#182;</a></h2>
+<p>Filtering by CSS Class</p>
+
 </div>
 </div>
 </div>
@@ -13656,7 +13832,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;sister&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;story-meta&quot;</span><span class="p">)</span>
 
 <span class="c1"># note the class_, since class is a reserved word in Python</span>
 </pre></div>
@@ -13682,26 +13858,6 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Encoding">Encoding<a class="anchor-link" href="#Encoding">&#182;</a></h2><h3 id="Last-but-not-least,-it's-important-to-remember-that-any-HTML-or-XML-is-written-in-a-specific-encoding-(ASCII,-UTF-8,-et.-cetera).-But,-bs4-turns-that-into-Unicode,-and-sometimes-it-makes-mistakes.">Last but not least, it's important to remember that any HTML or XML is written in a specific encoding (ASCII, UTF-8, et. cetera). But, bs4 turns that into Unicode, and sometimes it makes mistakes.<a class="anchor-link" href="#Last-but-not-least,-it's-important-to-remember-that-any-HTML-or-XML-is-written-in-a-specific-encoding-(ASCII,-UTF-8,-et.-cetera).-But,-bs4-turns-that-into-Unicode,-and-sometimes-it-makes-mistakes.">&#182;</a></h3><h3 id="If-you-know-the-encoding-ahead-of-time,-specify-it-when-you-originally-pass-it-in.-For-instance:">If you know the encoding ahead of time, specify it when you originally pass it in. For instance:<a class="anchor-link" href="#If-you-know-the-encoding-ahead-of-time,-specify-it-when-you-originally-pass-it-in.-For-instance:">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># soup = BeautifulSoup(html, from_encoding=&quot;iso-8859-8&quot;)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <hr>
 
 </div>
@@ -13710,14 +13866,15 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="RSS-Feeds">RSS Feeds<a class="anchor-link" href="#RSS-Feeds">&#182;</a></h1>
+<h1 id="RSS-Feeds">RSS Feeds<a class="anchor-link" href="#RSS-Feeds">&#182;</a></h1><p>An RSS ('Real Simple Syndication') feed is nothing more than a text file that is updated with information (usually pared down) from a website. For more, check out <a href="https://www.digitaltrends.com/computing/what-is-an-rss-feed/">this article by Digital Trends</a></p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3>In order to flex our RSS Feed skills we are going to be mimicking this brilliant and simple bot, @TwoHeadlines: <br> <a href="https://twitter.com/twoheadlines?lang=en">https://twitter.com/twoheadlines?lang=en</a></h3>
+<p>In order to flex our RSS Feed skills we are going to be mimicking this brilliant and simple bot, @TwoHeadlines: <br> <a href="https://twitter.com/twoheadlines?lang=en">https://twitter.com/twoheadlines?lang=en</a></p>
 <p><br></p>
 <p>The concept is simple. It takes two different headlines from two different outlets via their RSS feeds (which we'll go over in a moment) and combines them to produce often comical and almost always nonsensical news headlines.</p>
 <p><br></p>
@@ -13755,7 +13912,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><br> Great! Now, we want to begin by defining our function. <br></p>
-<h4>Remember, funcitons come in handy when you want to repeat the same task many times using the same <em>type</em> of input. <br></h4>
+<p>Remember, funcitons come in handy when you want to repeat the same task many times using the same <em>type</em> of input. <br></p>
 
 </div>
 </div>
@@ -13793,7 +13950,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="In-this-case,-we-will-call-our-function-'TwoHeadlines'">In this case, we will call our function 'TwoHeadlines'<a class="anchor-link" href="#In-this-case,-we-will-call-our-function-'TwoHeadlines'">&#182;</a></h4>
+<p>In this case, we will call our function 'TwoHeadlines'</p>
+
 </div>
 </div>
 </div>
@@ -13815,11 +13973,12 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Now,-for-some-RSS-feeds!">Now, for some RSS feeds!<a class="anchor-link" href="#Now,-for-some-RSS-feeds!">&#182;</a></h2><p>RSS is (Rich Site Summary, or, Real Simple Syndication) allows us to access website's content in a standardized and machine-readable format.</p>
-<p>To best understand RSS, take a look at the following examples:</p>
+<p>To best understand what you can get from an RSS feed, take a look at the following examples:</p>
 <p><a href="http://www.wsj.com/public/page/rss_news_and_feeds.html">http://www.wsj.com/public/page/rss_news_and_feeds.html</a> <br>
 <a href="https://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html">https://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html</a> <br>
 <a href="http://rss.cnn.com/rss/cnn_topstories.rss">http://rss.cnn.com/rss/cnn_topstories.rss</a> <br></p>
+<p>To see how you can actually pull these RSS feeds using Python, we're going to rely on Python. As an example, let's pull two feeds.</p>
+<p>Note that we first set a variable equal to the desired url for the desired RSS feed. Then, we use feedparser to store that information into a new variable.</p>
 
 </div>
 </div>
@@ -13829,13 +13988,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># to see how you can actually pull these RSS feeds using Python, we&#39;re going to rely on Python. </span>
-<span class="c1"># as an example, let&#39;s pull two feeds.</span>
-
-<span class="c1"># note that we first set a variable equal to the desired url for the desired RSS feed. </span>
-<span class="c1"># then, we use feedparser to store that information into a new variable.</span>
-
-<span class="n">nyt_rss_url</span> <span class="o">=</span> <span class="s1">&#39;https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml&#39;</span> <span class="c1"># find the desired rss feed</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nyt_rss_url</span> <span class="o">=</span> <span class="s1">&#39;https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml&#39;</span> <span class="c1"># find the desired rss feed</span>
 <span class="n">espn_rss_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.espn.com/espn/rss/news&#39;</span> <span class="c1"># find a second desired rss feed</span>
 
 <span class="n">nyt_feed</span> <span class="o">=</span> <span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">nyt_rss_url</span><span class="p">)</span> <span class="c1"># use feedparser to, well, parse the feed</span>
@@ -13850,7 +14003,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Next,-we-need-to-get-a-bit-creative:">Next, we need to get a bit creative:<a class="anchor-link" href="#Next,-we-need-to-get-a-bit-creative:">&#182;</a></h3><p>First and foremost, we don't want that entire RSS feed, we just want the headline for the latest article! But if you type the following:</p>
+<p>Next, we need to get a bit creative, because we don't want that entire RSS feed; We just want the headline for the latest article! But if you type the following:</p>
 
 </div>
 </div>
@@ -13885,7 +14038,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="But-how-did-we-know-to-use-&quot;['entries'][i]['title']&quot;?">But how did we know to use "['entries'][i]['title']"?<a class="anchor-link" href="#But-how-did-we-know-to-use-&quot;['entries'][i]['title']&quot;?">&#182;</a></h3><p>To understand, we need to briefly delve into the world of dictionaries</p>
+<p>But how did we know to use "['entries'][i]['title']"?</p>
+<p>To understand, we need to briefly delve into the world of dictionaries</p>
 
 </div>
 </div>
@@ -13943,7 +14097,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Now,-back-to-replicating-'TwoHeadlinesBot'">Now, back to replicating 'TwoHeadlinesBot'<a class="anchor-link" href="#Now,-back-to-replicating-'TwoHeadlinesBot'">&#182;</a></h3>
+<p>Now, back to replicating 'TwoHeadlinesBot'</p>
+
 </div>
 </div>
 </div>
@@ -14058,7 +14213,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="So,-how-do-we-want-to-mash-our-headlines-together?">So, how do we want to mash our headlines together?<a class="anchor-link" href="#So,-how-do-we-want-to-mash-our-headlines-together?">&#182;</a></h3>
+<p>So, how do we want to mash our headlines together?</p>
+
 </div>
 </div>
 </div>
@@ -14116,7 +14272,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3>Let's keep going. Remember, we want to take half of one headline and half of a different headline and mash them together. So, how do we get just the first or second half of a list of words?  <br></h3>
+<p>Let's keep going. Remember, we want to take half of one headline and half of a different headline and mash them together. So, how do we get just the first or second half of a list of words?  <br></p>
 
 </div>
 </div>
@@ -14150,7 +14306,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="OK,-so-let's-walk-through-that-code:">OK, so let's walk through that code:<a class="anchor-link" href="#OK,-so-let's-walk-through-that-code:">&#182;</a></h3><h3 id="1)-First,-the-[:">1) First, the [:<a class="anchor-link" href="#1)-First,-the-[:">&#182;</a></h3>
+<h2 id="Walkthrough-of-our-Code">Walkthrough of our Code<a class="anchor-link" href="#Walkthrough-of-our-Code">&#182;</a></h2><p>1) First, the <code>[:</code></p>
+
 </div>
 </div>
 </div>
@@ -14174,14 +14331,16 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="In-other-words,-we-want-to-print-everything-leading-up-to-(but-not-including!)-the-third-instance-in-our-list.">In other words, we want to print everything leading up to (but not including!) the third instance in our list.<a class="anchor-link" href="#In-other-words,-we-want-to-print-everything-leading-up-to-(but-not-including!)-the-third-instance-in-our-list.">&#182;</a></h3>
+<p>In other words, we want to print everything leading up to (but not including!) the third instance in our list.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2)--Next,-the-int-allows-us-to-ensure-we're-working-with-integers-so-we-can-do-the-necessary-division-at-the-end-of-the-line-of-code.">2)  Next, the int allows us to ensure we're working with integers so we can do the necessary division at the end of the line of code.<a class="anchor-link" href="#2)--Next,-the-int-allows-us-to-ensure-we're-working-with-integers-so-we-can-do-the-necessary-division-at-the-end-of-the-line-of-code.">&#182;</a></h3>
+<p>2)  Next, the <code>int</code> allows us to ensure we're working with integers so we can do the necessary division at the end of the line of code.</p>
+
 </div>
 </div>
 </div>
@@ -14214,7 +14373,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3)--len-is-a-function-that-gives-you-the-number-of-items-in-a-list.-For-instance:">3)  len is a function that gives you the number of items in a list. For instance:<a class="anchor-link" href="#3)--len-is-a-function-that-gives-you-the-number-of-items-in-a-list.-For-instance:">&#182;</a></h3>
+<p>3)  <code>len</code> is a function that gives you the number of items in a list. For instance:</p>
+
 </div>
 </div>
 </div>
@@ -14235,22 +14395,25 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4)-Finally,-we-are-taking-the-total-number-of-words-in-the-headline-and-dividing-by-two">4) Finally, we are taking the total number of words in the headline and dividing by two<a class="anchor-link" href="#4)-Finally,-we-are-taking-the-total-number-of-words-in-the-headline-and-dividing-by-two">&#182;</a></h3>
+<p>4) Finally, we are taking the total number of words in the headline and dividing by two</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="In-total,-we-are-saying:-&quot;Take-the-headline,-find-out-how-many-words-are-in-the-headline-and-divide-by-two.-Then,-take-the-first-half-of-that-headline-and-store-it-as-the-new-healdine.&quot;">In total, we are saying: "Take the headline, find out how many words are in the headline and divide by two. Then, take the first half of that headline and store it as the new healdine."<a class="anchor-link" href="#In-total,-we-are-saying:-&quot;Take-the-headline,-find-out-how-many-words-are-in-the-headline-and-divide-by-two.-Then,-take-the-first-half-of-that-headline-and-store-it-as-the-new-healdine.&quot;">&#182;</a></h3><h4 id="Note-that-while-for-the-first-healdine-we-take-the-first-half-(by-putting-the-':'-at-the-beginning-of-the-code)-we-are-taking-the-second-half-of-the-second-headline-(by-putting-the-':'-at-the-end-of-the-code)."><em>Note that while for the first healdine we take the first half (by putting the ':' at the beginning of the code) we are taking the second half of the second headline (by putting the ':' at the end of the code).</em><a class="anchor-link" href="#Note-that-while-for-the-first-healdine-we-take-the-first-half-(by-putting-the-':'-at-the-beginning-of-the-code)-we-are-taking-the-second-half-of-the-second-headline-(by-putting-the-':'-at-the-end-of-the-code).">&#182;</a></h4>
+<p>In total, we are saying: "Take the headline, find out how many words are in the headline and divide by two. Then, take the first half of that headline and store it as the new healdine."</p>
+<p><em>Note that while for the first healdine we take the first half (by putting the ':' at the beginning of the code) we are taking the second half of the second headline (by putting the ':' at the end of the code).</em></p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><br></p>
-<h3 id="Finally,-we-want-to-join-the-two-halves-of-our-healdine-and-store-it-as-the-variable-'new_headline'">Finally, we want to join the two halves of our healdine and store it as the variable 'new_headline'<a class="anchor-link" href="#Finally,-we-want-to-join-the-two-halves-of-our-healdine-and-store-it-as-the-variable-'new_headline'">&#182;</a></h3>
+<h2 id="All-together,-now">All together, now<a class="anchor-link" href="#All-together,-now">&#182;</a></h2><p>Finally, we want to join the two halves of our healdine and store it as the variable 'new_headline'</p>
+
 </div>
 </div>
 </div>
@@ -14274,45 +14437,6 @@ div#notebook {
     <span class="n">new_headline</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_headline</span><span class="p">)</span> <span class="c1"># Join the two strings created above with spaces</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">new_headline</span><span class="p">)</span> <span class="c1"># Print your newly created headline</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
